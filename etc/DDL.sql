@@ -1,0 +1,15 @@
+CREATE DATABASE IF NOT EXISTS ferryway DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+USE ferryway;
+
+DROP TABLE IF EXISTS `t_user` CASCADE;
+
+
+
+CREATE TABLE `t_user`(
+ `id` INT(11) NOT NULL  PRIMARY KEY AUTO_INCREMENT,
+ `username` VARCHAR (32) NOT NULL COMMENT '名字',
+ `age` INT(3) NOT NULL COMMENT '年龄'
+)ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+INSERT INTO t_user(`username`,`age`) values('张三','20');
+
