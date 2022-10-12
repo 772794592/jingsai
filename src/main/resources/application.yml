@@ -1,0 +1,17 @@
+server:
+  address: 127.0.0.1
+  port: 8088
+spring:
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+  web:
+    resources:
+      static-locations: classpath:templates/
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.50.190:3306/jingsai
+    username: root
+    password: 123456

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.jingsai.mapper.ProcessInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.jingsai.model.ProcessInfo">
+        <id column="id" property="id" />
+        <result column="pid" property="pid" />
+        <result column="user" property="user" />
+        <result column="pr" property="pr" />
+        <result column="ni" property="ni" />
+        <result column="virt" property="virt" />
+        <result column="res" property="res" />
+        <result column="shr" property="shr" />
+        <result column="s" property="s" />
+        <result column="cpu" property="cpu" />
+        <result column="mem" property="mem" />
+        <result column="time" property="time" />
+        <result column="command" property="command" />
+        <result column="record_time" property="recordTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, user, pr, ni, virt, res, shr, s, cpu, mem, time, command, record_time
+    </sql>
+
+</mapper>
