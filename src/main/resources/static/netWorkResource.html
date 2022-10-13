@@ -76,19 +76,20 @@
                             </el-table-column>
                             <el-table-column prop="patientNo" label="网卡名称">
                             </el-table-column>
-                            <el-table-column prop="patientNo" label="PID">
-                            </el-table-column>
+                            <!--<el-table-column prop="patientNo" label="PID">
+                            </el-table-column>-->
                             <el-table-column label="服务状态">
                                 <template v-slot:default="v">
                                     <i v-if="v.row.patientNo==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
                                     <i v-if="v.row.patientNo==2" class="el-icon-circle-check"  style="color:greenyellow;font-size:30px"></i>
                                 </template>
-
                             </el-table-column>
                             <el-table-column label="功能">
                                 <template slot-scope="scope">
                                     <div style="line-height: 1; font-size: 0;">
                                         <el-button @click="dialogVisible=true">查看详情</el-button>
+                                        <el-button @click="dialogVisible2=true">网卡状态</el-button>
+                                        <el-button @click="dialogVisible3=true">其它</el-button>
                                     </div>
                                 </template>
                             </el-table-column>
@@ -101,13 +102,13 @@
                             &nbsp;
                         </el-col>
                         <el-col :span="6">
-                            <el-form :label-position="left" label-width="80px">
+                            <el-form label-width="80px">
                                 <el-form-item label="服务名称">
                                     <el-input></el-input>
                                 </el-form-item>
-                                <el-form-item label="PID">
+                                <!--<el-form-item label="PID">
                                     <el-input></el-input>
-                                </el-form-item>
+                                </el-form-item>-->
                                 <el-form-item label="网卡名称">
                                     <el-input></el-input>
                                 </el-form-item>
@@ -119,6 +120,101 @@
                         </el-col>
                     </el-row>
                 </div>
+                <el-dialog
+                        title="服务详情"
+                        :visible.sync="dialogVisible"
+                        width="50%"
+                        :before-close="handleClose">
+                    <el-form label-width="140px" style="text-align: left">
+                        <el-form-item label="socket">
+                            test
+                        </el-form-item>
+                        <el-form-item label="UDP连接信息">
+                            test
+                        </el-form-item>
+                        <el-form-item label="TCP连接数">
+                            test
+                        </el-form-item>
+                        <el-form-item label="TCP连接状态">
+                            test
+                        </el-form-item>
+                        <el-form-item label="占用端口">
+                            test
+                        </el-form-item>
+                        <el-form-item label="流量">
+                            test
+                        </el-form-item>
+                        <el-form-item label="流速">
+                            test
+                        </el-form-item>
+                    </el-form>
+                </el-dialog>
+                <el-dialog
+                        title="网卡状态"
+                        :visible.sync="dialogVisible2"
+                        width="50%"
+                        :before-close="handleClose">
+
+                        <el-table height="750" border :data="index">
+                            <el-table-column prop="patientNo" label="网卡名称">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="流量">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="流速">
+                            </el-table-column>
+                        </el-table>
+                </el-dialog>
+                <el-dialog
+                        title="历史记录"
+                        :visible.sync="dialogVisible3"
+                        width="50%"
+                        :before-close="handleClose">
+                    <el-row style="text-align: left">
+                        <el-col :span="10">
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>至
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
+                        </el-col>
+                        <!--<el-col class="line" :span="1">-</el-col>
+                        <el-col :span="5">
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
+                        </el-col>-->
+                        <el-col :span="3">
+                            <el-button type="primary">搜索</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-table border height="750" :data="index">
+                            <el-table-column prop="patientNo" label="服务名称">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="socket">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="UDP连接信息">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="TCP连接数">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="占用端口">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="流量">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="流速">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="时间">
+                            </el-table-column>
+                        </el-table>
+                    </el-row>
+                </el-dialog>
             </el-main>
         </el-container>
     </el-container>
@@ -131,7 +227,9 @@
             index:[{
                 patientNo:2
             }],
-            dialogVisible:false
+            dialogVisible:false,
+            dialogVisible2:false,
+            dialogVisible3:false,
         },
         methods: {
             open3:function (){

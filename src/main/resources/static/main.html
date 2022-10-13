@@ -74,8 +74,8 @@
                                     </el-table-column>
                                     <el-table-column prop="patientNo" label="服务名">
                                     </el-table-column>
-                                    <el-table-column prop="patientNo" label="PID">
-                                    </el-table-column>
+                                    <!--<el-table-column prop="patientNo" label="PID">
+                                    </el-table-column>-->
                                     <el-table-column label="服务状态">
                                         <template v-slot:default="v">
                                             <i v-if="v.row.patientNo==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
@@ -99,16 +99,16 @@
                                     &nbsp;
                                 </el-col>
                                 <el-col :span="6">
-                                <el-form :label-position="left" label-width="80px">
-                                    <el-form-item label="服务名称">
-                                        <el-input></el-input>
+                                <el-form :model="services" :rules="servicesRule" ref="ruleForm" label-width="80px">
+                                    <el-form-item label="服务名称" prop="name">
+                                        <el-input v-model="services.name"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="PID">
-                                        <el-input></el-input>
-                                    </el-form-item>
+                                    <!--<el-form-item label="PID">
+                                        <el-input v-model="services.pid"></el-input>
+                                    </el-form-item>-->
                                     <el-form-item>
                                         <el-button type="primary">保存</el-button>
-                                        <el-button @click="cancel">取消</el-button>
+                                        <el-button @click="cancel('ruleForm')">取消</el-button>
                                     </el-form-item>
                                 </el-form>
                                 </el-col>
@@ -117,9 +117,9 @@
                         <el-dialog
                                 title="服务详情"
                                 :visible.sync="dialogVisible"
-                                width="30%"
-                                :before-close="handleClose">
-                            <el-form :label-position="right" label-width="140px" style="text-align: left">
+                                width="50%"
+                        >
+                            <el-form label-width="140px" style="text-align: left">
                                 <el-form-item label="进程ID">
                                     test
                                 </el-form-item>
@@ -167,7 +167,14 @@
             index:[{
                 patientNo:2
             }],
-            dialogVisible:false
+            dialogVisible:false,
+            services: {
+                name: '',
+                pid:''
+            },
+            servicesRule:{
+                name:[{ required: true, message: '请输入服务名称', trigger: 'blur' }]
+            }
         },
         methods: {
             open3:function (){
@@ -180,9 +187,10 @@
                 $("#showTable").css("display","none");
                 $("#add").css("display","block");
             },
-            cancel:function (){
+            cancel:function (formName){
                 $("#showTable").css("display","block");
                 $("#add").css("display","none");
+                this.$refs[formName].resetFields();
             },
             del:function (){
                 this.$confirm("是否删除服务?", "提示", {
