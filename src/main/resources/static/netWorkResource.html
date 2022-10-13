@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="element-ui/css/index.css">
+    <script src="element-ui/js/jquery.js"></script>
+    <script src="element-ui/js/vue.js"></script>
+    <script src="element-ui/js/index.js"></script>
+    <style>
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+        .el-row {
+            margin-top: 10px;
+        }
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 200px;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+        }
+
+        body > .el-container {
+            margin-bottom: 40px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+        html,body,#app,.el-container{
+            margin: 0;
+            padding: 0;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>进程占用网络资源管理</el-header>
+        <el-container>
+            <el-aside width="200px">Aside</el-aside>
+            <el-main>
+                <div id="showTable" style="display:block;">
+                    <el-row>
+                        <el-col :span="16" style="text-align: left">
+                            <el-button @click="add">添加</el-button>
+                            <el-button @click="del">删除</el-button>
+                            <el-button>刷新</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-table :data="index">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="ID">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="服务名">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="网卡名称">
+                            </el-table-column>
+                            <el-table-column prop="patientNo" label="PID">
+                            </el-table-column>
+                            <el-table-column label="服务状态">
+                                <template v-slot:default="v">
+                                    <i v-if="v.row.patientNo==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
+                                    <i v-if="v.row.patientNo==2" class="el-icon-circle-check"  style="color:greenyellow;font-size:30px"></i>
+                                </template>
+
+                            </el-table-column>
+                            <el-table-column label="功能">
+                                <template slot-scope="scope">
+                                    <div style="line-height: 1; font-size: 0;">
+                                        <el-button @click="dialogVisible=true">查看详情</el-button>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-row>
+                </div>
+                <div id="add" style="display: none">
+                    <el-row>
+                        <el-col :span="9">
+                            &nbsp;
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form :label-position="left" label-width="80px">
+                                <el-form-item label="服务名称">
+                                    <el-input></el-input>
+                                </el-form-item>
+                                <el-form-item label="PID">
+                                    <el-input></el-input>
+                                </el-form-item>
+                                <el-form-item label="网卡名称">
+                                    <el-input></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary">保存</el-button>
+                                    <el-button @click="cancel">取消</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script type="text/javascript">
+    var vm=new Vue({
+        el: '#app',
+        data: {
+            index:[{
+                patientNo:2
+            }],
+            dialogVisible:false
+        },
+        methods: {
+            open3:function (){
+                this.$message({
+                    showClose: true,
+                    message: '这是一条消息提示'
+                });
+            },
+            add:function (){
+                $("#showTable").css("display","none");
+                $("#add").css("display","block");
+            },
+            cancel:function (){
+                $("#showTable").css("display","block");
+                $("#add").css("display","none");
+            },
+            del:function (){
+                this.$confirm("是否删除服务?", "提示", {
+                    iconClass: "el-icon-question", //自定义图标样式
+                    confirmButtonText: "确认", //确认按钮文字更换
+                    cancelButtonText: "取消", //取消按钮文字更换
+                    showClose: true, //是否显示右上角关闭按钮
+                    type: "warning", //提示类型  success/info/warning/error
+                })
+                    .then(function () {  //选择确认进入此方法
+                        //确认操作
+                    })
+                    .then(() => {  //上一个then()执行成功后执行后续方法
+                        this.getList();
+                        this.$modal.msgSuccess("修改成功");
+                    })
+                    .catch(function (err) { //取消按钮会视为erro
+                        debugger;
+                        //捕获异常
+                        console.log(err);
+                    });
+            },
+        }
+    })
+</script>
+</html>
