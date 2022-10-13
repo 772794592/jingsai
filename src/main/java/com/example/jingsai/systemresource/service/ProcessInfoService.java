@@ -1,17 +1,31 @@
 package com.example.jingsai.systemresource.service;
 
 import com.example.jingsai.systemresource.pojo.ProcessInfo;
+import com.example.jingsai.utils.BaseResponse;
+import java.util.List;
+
 /**
  * @author: shigw
  * @Date:2022-10-12 14:36
  */
 public interface ProcessInfoService {
 
+
+
+
     /***
-     * 查看进程的占用系统资源
+     * Llinux 查看进程的占用系统资源(未进行数据库交互)
      * @param service
      * @param pid
      * @return
      */
-    ProcessInfo queryByname(String service,String pid);
+    BaseResponse queryByname(String service, String pid);
+
+
+    /***
+     * 查询出所有进程的资源占用情况
+     * @return
+     */
+    List<ProcessInfo> queryProcess();
+
 }
