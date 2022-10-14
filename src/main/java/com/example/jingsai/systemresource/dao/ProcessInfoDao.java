@@ -3,8 +3,10 @@ package com.example.jingsai.systemresource.dao;
 import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ public interface ProcessInfoDao {
      */
     @Select("select * from process_info")
     List<ProcessInfo> queryProcess();
+    @Select("SELECT * FROM `process_info` where  service_name = #{serviceName} and record_time BETWEEN  #{beginTime}  AND #{endTime} ")
+    List<ProcessInfo> query(@Param("beginTime") String beginTime,@Param("endTime") String endTime,@Param("serviceName") String serviceName);
 
     /***
      * 添加进程资源占用

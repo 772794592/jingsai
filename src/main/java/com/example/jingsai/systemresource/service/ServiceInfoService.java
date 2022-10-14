@@ -30,4 +30,5 @@ public interface ServiceInfoService {
      * @return
      */
     BaseResponse  delService(int id);
+
 }

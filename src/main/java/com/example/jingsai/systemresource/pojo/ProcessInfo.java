@@ -87,6 +87,16 @@ public class ProcessInfo implements Serializable {
      */
     private LocalDateTime recordTime;
 
+    private String service_name;
+
+    public String getService_name() {
+        return service_name;
+    }
+
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -189,20 +199,21 @@ public class ProcessInfo implements Serializable {
     @Override
     public String toString() {
         return "ProcessInfo{" +
-            "id=" + id +
-            ", pid=" + pid +
-            ", user=" + user +
-            ", pr=" + pr +
-            ", ni=" + ni +
-            ", virt=" + virt +
-            ", res=" + res +
-            ", shr=" + shr +
-            ", s=" + s +
-            ", cpu=" + cpu +
-            ", mem=" + mem +
-            ", time=" + time +
-            ", command=" + command +
-            ", recordTime=" + recordTime +
-        "}";
+                "id=" + id +
+                ", pid=" + pid +
+                ", user='" + user + '\'' +
+                ", pr=" + pr +
+                ", ni=" + ni +
+                ", virt=" + virt +
+                ", res=" + res +
+                ", shr=" + shr +
+                ", s='" + s + '\'' +
+                ", cpu=" + cpu +
+                ", mem=" + mem +
+                ", time='" + time + '\'' +
+                ", command='" + command + '\'' +
+                ", recordTime=" + recordTime +
+                ", service_name='" + service_name + '\'' +
+                '}';
     }
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 public class entityUtils {
 
-    public static ProcessInfo getProessMessage(String msg){
+    public static ProcessInfo getProessMessage(String msg,String serviceName){
         ProcessInfo processInfo = new ProcessInfo();
         String[] messages = msg.split(" ");
         processInfo.setPid(Integer.valueOf(messages[0]));
@@ -26,6 +26,7 @@ public class entityUtils {
         processInfo.setTime(messages[10]);
         processInfo.setCommand(messages[11]);
         processInfo.setRecordTime(LocalDateTime.now());
+        processInfo.setService_name(serviceName);
         return processInfo;
     }
 }

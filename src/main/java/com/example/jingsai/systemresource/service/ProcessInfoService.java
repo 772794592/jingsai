@@ -2,6 +2,8 @@ package com.example.jingsai.systemresource.service;
 
 import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.utils.BaseResponse;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,13 +21,15 @@ public interface ProcessInfoService {
      * @param pid
      * @return
      */
-    BaseResponse queryByname(String service, String pid);
+    BaseResponse queryByname(String service);
 
 
     /***
      * 查询出所有进程的资源占用情况
      * @return
      */
-    List<ProcessInfo> queryProcess();
+    BaseResponse queryProcess();
+
+    BaseResponse query(String beginTime, String endTime, String serviceName);
 
 }

@@ -1,6 +1,8 @@
 package com.example.jingsai.systemresource.pojo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author: shigw
@@ -18,17 +20,17 @@ public class ServiceInfo implements Serializable {
     /**
      * 服务名称
      */
-    private String serviceName;
+    private String service_name;
 
     /**
      * 服务状态
      */
-    private Integer serviceStatus;
+    private Integer service_status;
 
     /**
      *记录时间
      */
-    private Integer recordTime;
+    private LocalDateTime record_time;
 
 
     public Integer getId() {
@@ -39,37 +41,37 @@ public class ServiceInfo implements Serializable {
         this.id = id;
     }
 
-    public String getServiceName() {
-        return serviceName;
+    public String getService_name() {
+        return service_name;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
     }
 
-    public Integer getServiceStatus() {
-        return serviceStatus;
+    public Integer getService_status() {
+        return service_status;
     }
 
-    public void setServiceStatus(Integer serviceStatus) {
-        this.serviceStatus = serviceStatus;
+    public void setService_status(Integer service_status) {
+        this.service_status = service_status;
     }
 
-    public Integer getRecordTime() {
-        return recordTime;
+    public LocalDateTime getRecord_time() {
+        return record_time;
     }
 
-    public void setRecordTime(Integer recordTime) {
-        this.recordTime = recordTime;
+    public void setRecord_time(LocalDateTime record_time) {
+        this.record_time = record_time;
     }
 
     @Override
     public String toString() {
         return "ServiceInfo{" +
                 "id=" + id +
-                ", serviceName='" + serviceName + '\'' +
-                ", serviceStatus=" + serviceStatus +
-                ", recordTime=" + recordTime +
+                ", service_name='" + service_name + '\'' +
+                ", service_status=" + service_status +
+                ", record_time=" + record_time +
                 '}';
     }
 }

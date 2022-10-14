@@ -28,4 +28,9 @@ public class ServiceInfoController {
     public BaseResponse addService(@RequestBody ServiceInfo serviceInfo){
         return serviceInfoService.addService(serviceInfo);
     }
+
+    @PostMapping("del")
+    public BaseResponse delService(@RequestParam int id){
+        return serviceInfoService.delService(id);
+    }
 }

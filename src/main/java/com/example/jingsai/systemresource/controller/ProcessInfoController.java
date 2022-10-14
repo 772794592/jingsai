@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 /**
  * @author: shigw
@@ -23,13 +24,21 @@ public class ProcessInfoController {
     private ProcessInfoService processInfoService;
 
     /***
+     * 根据条件查询出进程信息
+     */
+    @GetMapping("queryBytime")
+    public BaseResponse query(@RequestParam("beginTime") String beginTime,@RequestParam("endTime")  String endTime,@RequestParam("serviceName")  String serviceName)  {
+        return processInfoService.query(beginTime,endTime,serviceName);
+    }
+
+    /***
      * 查看进程的占用系统资源
      * @param service
      * @param pid
      * @return
      */
-    @GetMapping("query")
-    public BaseResponse query(@RequestParam("service") String service, @RequestParam("pid") String pid)  {
-        return processInfoService.queryByname(service, pid);
+    @GetMapping("queryByname")
+    public BaseResponse queryByname(@RequestParam("service") String service)  {
+        return processInfoService.queryByname(service);
     }
 }

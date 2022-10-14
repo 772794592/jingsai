@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author: shigw
  * @Date:2022-10-13 13:38
  */
-@Component
+/*@Component
 @Order(value = 1)
 public class SysProcessTimer implements CommandLineRunner {
 
@@ -52,7 +52,7 @@ public class SysProcessTimer implements CommandLineRunner {
                                 String[] command = new String[]{"/opt/jdwa/sync/etc/unisync.sh","get_process",severPid.stdout};
                                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
                                 if(exec.exitCode ==0 ||(exec.stdout != null || !"".equals(exec.stdout))){
-                                    ProcessInfo proessMessage = entityUtils.getProessMessage(exec.stdout);
+                                    ProcessInfo proessMessage = entityUtils.getProessMessage(exec.stdout,serviceInfo.getServiceName());
                                     processInfoDao.addProcess(proessMessage);
                                 }
                             }
@@ -70,4 +70,4 @@ public class SysProcessTimer implements CommandLineRunner {
             }
         }).start();
     }
-}
+}*/

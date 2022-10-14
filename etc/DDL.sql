@@ -24,6 +24,7 @@ CREATE  TABLE  `service_process` (
 
 CREATE TABLE `process_info` (
     `id` INT AUTO_INCREMENT COMMENT 'ID',
+    `service_name` varchar(64) COMMENT '服务名称',
     `pid`INT  COMMENT '进程ID',
     `user` VARCHAR(64) COMMENT '进程所有者用户',
     `pr` INT COMMENT '进程优先级，值越小优先级越高',
