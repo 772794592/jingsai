@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
  * @author: shigw
  * @Date:2022-10-13 14:15
  */
-public class entityUtils {
+public class EntityUtils {
 
+    public static final String  CMDPARAM ="/opt/jdwa/sync/etc/unisync.sh";
     public static ProcessInfo getProessMessage(String msg,String serviceName){
         ProcessInfo processInfo = new ProcessInfo();
         String[] messages = msg.split(" ");

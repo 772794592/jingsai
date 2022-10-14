@@ -34,7 +34,6 @@ public class ProcessInfoController {
     /***
      * 查看进程的占用系统资源
      * @param service
-     * @param pid
      * @return
      */
     @GetMapping("queryByname")

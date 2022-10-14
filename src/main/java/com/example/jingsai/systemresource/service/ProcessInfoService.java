@@ -18,7 +18,6 @@ public interface ProcessInfoService {
     /***
      * Llinux 查看进程的占用系统资源(未进行数据库交互)
      * @param service
-     * @param pid
      * @return
      */
     BaseResponse queryByname(String service);

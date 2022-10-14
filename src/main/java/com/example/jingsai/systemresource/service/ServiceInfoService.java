@@ -2,6 +2,7 @@ package com.example.jingsai.systemresource.service;
 
 import com.example.jingsai.systemresource.pojo.ServiceInfo;
 import com.example.jingsai.utils.BaseResponse;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

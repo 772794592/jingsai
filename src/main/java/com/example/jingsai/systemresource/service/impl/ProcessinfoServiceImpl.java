@@ -2,16 +2,13 @@ package com.example.jingsai.systemresource.service.impl;
 
 import com.example.jingsai.enums.CodeEnum;
 import com.example.jingsai.systemresource.dao.ProcessInfoDao;
-import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.service.ProcessInfoService;
 import com.example.jingsai.utils.BaseResponse;
 import com.example.jingsai.utils.CommandUtil;
-import com.example.jingsai.utils.entityUtils;
+import com.example.jingsai.utils.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -42,7 +39,6 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
     /***
      * 查看进程的占用系统资源
      * @param service
-     * @param pid
      * @return
      */
     @Override
@@ -60,7 +56,7 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
                 String[] command = new String[]{"/opt/jdwa/sync/etc/unisync.sh", "get_process", severPid.stdout};
                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
                 if (exec.exitCode == 0 || (exec.stdout != null || !"".equals(exec.stdout))) {
-                    return BaseResponse.createBySuccess(entityUtils.getProessMessage(exec.stdout,service));
+                    return BaseResponse.createBySuccess(EntityUtils.getProessMessage(exec.stdout,service));
                 }
             }
         } catch (Exception e) {

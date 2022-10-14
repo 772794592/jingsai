@@ -1,20 +1,5 @@
 package com.example.jingsai.systemresource;
 
-import com.example.jingsai.systemresource.dao.ProcessInfoDao;
-import com.example.jingsai.systemresource.dao.ServiceInfoDao;
-import com.example.jingsai.systemresource.pojo.ProcessInfo;
-import com.example.jingsai.systemresource.pojo.ServiceInfo;
-import com.example.jingsai.utils.CommandUtil;
-import com.example.jingsai.utils.entityUtils;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.logging.Logger;
-
 /**
  * @author: shigw
  * @Date:2022-10-13 13:38

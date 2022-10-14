@@ -1,10 +1,7 @@
 package com.example.jingsai.systemresource.dao;
 
 import com.example.jingsai.systemresource.pojo.ServiceInfo;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -38,4 +35,7 @@ public interface ServiceInfoDao {
      */
     @Delete("DELETE FROM service_process where id =#{id}")
     int  delService(int id);
+
+    @Update("update service_process set service_status = #{serviceStatus} where id =#{id}")
+    int updateStatus(@Param("serviceStatus") int serviceStatus,@Param("id") int id);
 }
