@@ -192,7 +192,6 @@ public class ProcessInfo implements Serializable {
         this.command = command;
     }
 
-
     public long getRecordTime() {
         return recordTime;
     }
@@ -210,7 +209,7 @@ public class ProcessInfo implements Serializable {
                 ", pr=" + pr +
                 ", ni=" + ni +
                 ", virt=" + virt +
-                ", res=" + res +
+                ", res='" + res + '\'' +
                 ", shr=" + shr +
                 ", s='" + s + '\'' +
                 ", cpu=" + cpu +

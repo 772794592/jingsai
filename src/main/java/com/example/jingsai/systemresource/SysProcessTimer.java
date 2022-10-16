@@ -51,9 +51,11 @@ public class SysProcessTimer implements CommandLineRunner {
                                 }
                                 String[] command = new String[]{"/opt/jdwa/sync/etc/unisync.sh","get_process",severPid.stdout};
                                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
-                                if(exec.exitCode ==0 ||(exec.stdout != null || !"".equals(exec.stdout))){
+                                if(exec.exitCode ==0 && !"".equals(exec.stdout)){
                                     ProcessInfo proessMessage = EntityUtils.getProessMessage(exec.stdout,serviceInfo.getService_name());
                                     processInfoDao.addProcess(proessMessage);
+                                }else{
+                                    log.info("process is stop or error");
                                 }
                             }
                         }

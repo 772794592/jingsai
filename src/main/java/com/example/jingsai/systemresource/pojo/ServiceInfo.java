@@ -30,7 +30,7 @@ public class ServiceInfo implements Serializable {
     /**
      *记录时间
      */
-    private LocalDateTime record_time;
+    private long record_time;
 
 
     public Integer getId() {
@@ -57,11 +57,11 @@ public class ServiceInfo implements Serializable {
         this.service_status = service_status;
     }
 
-    public LocalDateTime getRecord_time() {
+    public long getRecord_time() {
         return record_time;
     }
 
-    public void setRecord_time(LocalDateTime record_time) {
+    public void setRecord_time(long record_time) {
         this.record_time = record_time;
     }
 
