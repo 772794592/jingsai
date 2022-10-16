@@ -29,9 +29,9 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
 
 
     @Override
-    public BaseResponse query() {
+    public List<ServiceInfo> query() {
         updateStatus();
-        return BaseResponse.createBySuccess(serviceInfoDao.query());
+        return serviceInfoDao.query();
     }
 
     @Override

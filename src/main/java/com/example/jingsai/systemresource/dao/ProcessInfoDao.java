@@ -22,8 +22,8 @@ public interface ProcessInfoDao {
      */
     @Select("select * from process_info")
     List<ProcessInfo> queryProcess();
-    @Select("SELECT * FROM `process_info` where  service_name = #{serviceName} and record_time BETWEEN  #{beginTime}  AND #{endTime} ")
-    List<ProcessInfo> query(@Param("beginTime") String beginTime,@Param("endTime") String endTime,@Param("serviceName") String serviceName);
+    //@Select("SELECT * FROM `process_info` where  service_name = #{serviceName} and record_time BETWEEN  #{beginTime}  AND #{endTime} ")
+    List<ProcessInfo> query(String beginTime,String endTime,String serviceName);
 
     /***
      * 添加进程资源占用
