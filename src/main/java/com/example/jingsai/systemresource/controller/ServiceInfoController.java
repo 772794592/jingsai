@@ -27,15 +27,25 @@ public class ServiceInfoController {
         Integer pageSize = jsonObject.getInteger("pageSize");
         Integer pageNum = jsonObject.getInteger("pageNum");
         PageUtil pageUtil = new PageUtil(pageNum, pageSize,serviceInfoService.query());
-        System.out.println(pageUtil);
         return BaseResponse.createBySuccess(pageUtil);
     }
 
+    /***
+     * 添加服务
+
+     * @param serviceInfo
+     * @return
+     */
     @PostMapping("add")
     public BaseResponse addService(@RequestBody ServiceInfo serviceInfo){
         return serviceInfoService.addService(serviceInfo);
     }
 
+    /***
+     * 删除服务
+     * @param id
+     * @return
+     */
     @PostMapping("del")
     public BaseResponse delService(@RequestParam int id){
         return serviceInfoService.delService(id);

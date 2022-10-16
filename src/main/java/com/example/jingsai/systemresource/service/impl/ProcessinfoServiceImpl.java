@@ -35,9 +35,6 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
 
     @Override
     public List<ProcessInfo> query(String beginTime, String endTime, String serviceName) {
-        System.out.println(beginTime);
-        System.out.println(endTime);
-        System.out.println(serviceName);
         return processInfoDao.query(beginTime,endTime,serviceName);
     }
 

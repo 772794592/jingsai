@@ -46,7 +46,6 @@ public class SysProcessTimer implements CommandLineRunner {
                         for (ServiceInfo serviceInfo : serviceInfos) {
                             if (serviceInfo.getService_status() == 0) {
                                 CommandUtil.ExecReturn severPid = CommandUtil.exec(new String[]{"pgrep", "-f", serviceInfo.getService_name()});
-                                //TODO 有可能获取两个PID，此命令待确定，是否分割取出PID
                                 if(severPid.exitCode != 0 || "".equals(severPid.stdout)){
                                     log.info("Error get PID is not null");
                                 }
@@ -55,7 +54,6 @@ public class SysProcessTimer implements CommandLineRunner {
                                 if(exec.exitCode ==0 ||(exec.stdout != null || !"".equals(exec.stdout))){
                                     ProcessInfo proessMessage = EntityUtils.getProessMessage(exec.stdout,serviceInfo.getService_name());
                                     processInfoDao.addProcess(proessMessage);
-
                                 }
                             }
                         }
