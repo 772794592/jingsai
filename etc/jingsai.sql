@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `process_net` CASCADE;
 DROP TABLE IF EXISTS `netcard_traffic` CASCADE;
 
 CREATE TABLE `process_info` (
-    `id` INT COMMENT 'ID',
+    `id` INT AUTO_INCREMENT COMMENT 'ID',
     `pid`INT COMMENT '进程ID',
     `user` VARCHAR(64) COMMENT '进程所有者用户',
     `pr` INT COMMENT '进程优先级，值越小优先级越高',
@@ -23,7 +23,7 @@ CREATE TABLE `process_info` (
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
 
 CREATE TABLE `process_net` (
-    `id` INT COMMENT 'ID',
+    `id` INT AUTO_INCREMENT COMMENT 'ID',
     `pid` INT COMMENT '进程ID',
     `proto` VARCHAR(64) COMMENT '协议',
     `local_address` VARCHAR(256) COMMENT '本地地址',
@@ -35,7 +35,7 @@ CREATE TABLE `process_net` (
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
 
 CREATE TABLE `netcard_traffic` (
-    `id` INT COMMENT 'ID',
+    `id` INT AUTO_INCREMENT COMMENT 'ID',
     `nic` INT COMMENT '网卡名称',
     `status` VARCHAR(64) COMMENT '网卡状态',
     `rx` BIGINT COMMENT '接收流速',
