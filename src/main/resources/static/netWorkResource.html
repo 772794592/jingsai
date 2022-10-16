@@ -87,9 +87,9 @@
                             <el-table-column label="功能">
                                 <template slot-scope="scope">
                                     <div style="line-height: 1; font-size: 0;">
-                                        <el-button @click="dialogVisible=true">查看详情</el-button>
-                                        <el-button @click="dialogVisible2=true">网卡状态</el-button>
-                                        <el-button @click="dialogVisible3=true">其它</el-button>
+                                        <el-button size="mini" @click="dialogVisible=true">查看详情</el-button>
+                                        <el-button size="mini" @click="dialogVisible2=true">网卡状态</el-button>
+                                        <el-button size="mini" @click="dialogVisible3=true">其它</el-button>
                                     </div>
                                 </template>
                             </el-table-column>
@@ -102,19 +102,19 @@
                             &nbsp;
                         </el-col>
                         <el-col :span="6">
-                            <el-form label-width="80px">
-                                <el-form-item label="服务名称">
-                                    <el-input></el-input>
+                            <el-form :model="services" :rules="servicesRule" ref="ruleForm" label-width="80px">
+                                <el-form-item label="服务名称" prop="name">
+                                    <el-input v-model="services.name"></el-input>
                                 </el-form-item>
                                 <!--<el-form-item label="PID">
                                     <el-input></el-input>
                                 </el-form-item>-->
-                                <el-form-item label="网卡名称">
-                                    <el-input></el-input>
+                                <el-form-item label="网卡名称" prop="netCards">
+                                    <el-input v-model="services.netCards"></el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button type="primary">保存</el-button>
-                                    <el-button @click="cancel">取消</el-button>
+                                    <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
+                                    <el-button @click="cancel('ruleForm')">取消</el-button>
                                 </el-form-item>
                             </el-form>
                         </el-col>
@@ -123,8 +123,7 @@
                 <el-dialog
                         title="服务详情"
                         :visible.sync="dialogVisible"
-                        width="50%"
-                        :before-close="handleClose">
+                        width="50%">
                     <el-form label-width="140px" style="text-align: left">
                         <el-form-item label="socket">
                             test
@@ -152,8 +151,7 @@
                 <el-dialog
                         title="网卡状态"
                         :visible.sync="dialogVisible2"
-                        width="50%"
-                        :before-close="handleClose">
+                        width="50%">
 
                         <el-table height="750" border :data="index">
                             <el-table-column prop="patientNo" label="网卡名称">
@@ -167,17 +165,14 @@
                 <el-dialog
                         title="历史记录"
                         :visible.sync="dialogVisible3"
-                        width="50%"
-                        :before-close="handleClose">
+                        width="50%">
                     <el-row style="text-align: left">
-                        <el-col :span="10">
+                        <el-col :span="12">
                             <el-date-picker
-                                    v-model="value1"
                                     type="datetime"
                                     placeholder="选择日期时间">
                             </el-date-picker>至
                             <el-date-picker
-                                    v-model="value1"
                                     type="datetime"
                                     placeholder="选择日期时间">
                             </el-date-picker>
@@ -195,7 +190,7 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-table border height="750" :data="index">
+                        <el-table border height="550" :data="index">
                             <el-table-column prop="patientNo" label="服务名称">
                             </el-table-column>
                             <el-table-column prop="patientNo" label="socket">
@@ -223,28 +218,76 @@
 <script type="text/javascript">
     var vm=new Vue({
         el: '#app',
-        data: {
-            index:[{
-                patientNo:2
-            }],
-            dialogVisible:false,
-            dialogVisible2:false,
-            dialogVisible3:false,
+        data(){
+            var checkName = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('服务名不能为空'));
+                }
+                let pattern = /^\S*$/;
+                if(!pattern.test(value)){
+                    return callback(new Error('服务名不能包含空格'));
+                }
+                callback();
+            };
+            var checknetCards = (rule, value, callback) => {
+                if (!value) {
+                    return callback(new Error('网卡名不能为空'));
+                }
+                let pattern = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{0,}$/;
+                let cardList = value.split(",");
+                for(var i=0;i<cardList.length;i++){
+                    if(!pattern.test(cardList[i])){
+                        return callback(new Error('网卡名只能由字母和数字组成'));
+                    }
+                }
+                callback();
+            };
+            return{
+                index:[{
+                    patientNo:2
+                }],
+                dialogVisible:false,
+                dialogVisible2:false,
+                dialogVisible3:false,
+                services: {
+                    name: '',
+                    netCards:''
+                },
+                servicesRule:{
+                    name:[{ validator: checkName, trigger: 'blur' }],
+                    netCards: [{validator: checknetCards, trigger: 'blur'}]
+                },
+            };
         },
         methods: {
             open3:function (){
                 this.$message({
-                    showClose: true,
-                    message: '这是一条消息提示'
+                    message: '这是一条消息提示',
+                    type: 'success'
                 });
             },
             add:function (){
                 $("#showTable").css("display","none");
                 $("#add").css("display","block");
             },
-            cancel:function (){
+            submitForm:function (formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.$message({
+                            message: '添加成功',
+                            type: 'success'
+                        });
+                        this.cancel();
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            cancel:function (formName){
                 $("#showTable").css("display","block");
                 $("#add").css("display","none");
+                this.$refs[formName].resetFields();
             },
             del:function (){
                 this.$confirm("是否删除服务?", "提示", {
@@ -262,7 +305,6 @@
                         this.$modal.msgSuccess("修改成功");
                     })
                     .catch(function (err) { //取消按钮会视为erro
-                        debugger;
                         //捕获异常
                         console.log(err);
                     });
