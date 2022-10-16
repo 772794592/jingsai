@@ -2,7 +2,7 @@ package com.example.jingsai.service;
 
 import com.example.jingsai.model.ProcessNet;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -14,5 +14,12 @@ import java.util.List;
  */
 public interface ProcessNetService {
 
-    List<ProcessNet> query();
+    void saveBatch(String stdout);
+
+    Map<String, Object> page(int i, int page, int size, long beginTm, long endTm);
+
+    ProcessNet detail(int pid);
+
+    void rollback(int max, int min);
+
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +97,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
                     processInfo.setMem(Double.parseDouble(data[9]));
                     processInfo.setTime(data[10]);
                     processInfo.setCommand(data[11]);
+                    processInfo.setCreateTime(LocalDateTime.now());
 
                     return processInfo;
                 }).collect(Collectors.toList());

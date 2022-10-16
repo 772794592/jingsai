@@ -3,6 +3,8 @@ package com.example.jingsai.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.jingsai.model.ProcessNet;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -13,4 +15,9 @@ import com.example.jingsai.model.ProcessNet;
  */
 public interface ProcessNetMapper extends BaseMapper<ProcessNet> {
 
+    int saveBatch(List<ProcessNet> list);
+
+    ProcessNet selectByMaxId(int pid);
+
+    void rollback(int delCount);
 }

@@ -6,7 +6,7 @@ public class ShellCommand {
 
     public static final String NIC_STATE = "ip addr | grep BROADCAST | tr : ' '| awk '{print $2,$9}'";
 
-    public static final String NETSTAT = "netstat -anp";
+    public static final String NETSTAT = "netstat -anp | sed -n '3,/Active UNIX/p' | grep -v 'Active UNIX'";
 
 
     public static String[] getShell(String cmd, Object... args) {

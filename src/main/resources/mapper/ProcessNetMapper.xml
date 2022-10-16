@@ -19,4 +19,29 @@
         id, pid, proto, local_address, foreign_address, state, pid_program_name, create_time
     </sql>
 
+    <insert id="saveBatch">
+        INSERT INTO process_net
+        (<include refid="Base_Column_List"/>)
+        VALUES
+        <foreach collection="list" item="processNet" separator="," open="(" close=")">
+            #{processNet.pid},
+            #{processNet.proto},
+            #{processNet.localAddress},
+            #{processNet.foreignAddress},
+            #{processNet.state},
+            #{processNet.pidProgramName},
+            #{processNet.createTime}
+        </foreach>
+    </insert>
+
+    <select id="selectByMaxId" resultType="com.example.jingsai.model.ProcessNet">
+        SELECT <include refid="Base_Column_List"/>
+        FROM process_Net
+        WHERE pid = #{pid} AND id IN (SELECT max(id) FROM process_net);
+    </select>
+
+    <delete id="rollback">
+        DELETE FROM process_net ORDER BY id LIMIT #{delCount}
+    </delete>
+
 </mapper>

@@ -5,11 +5,9 @@ import com.example.jingsai.model.ProcessNet;
 import com.example.jingsai.service.ProcessNetService;
 import com.example.jingsai.utils.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -26,10 +24,20 @@ public class ProcessNetController {
     @Autowired
     private ProcessNetService processNetService;
 
-    @GetMapping("query")
-    public BaseResponse query() {
-        List<ProcessNet> list = processNetService.query();
-        return BaseResponse.createBySuccess(list);
+    @GetMapping("detail/{pid}")
+    public BaseResponse detail(@PathVariable("pid") int pid) {
+        ProcessNet processNet = processNetService.detail(pid);
+        return BaseResponse.createBySuccess(processNet);
+    }
+
+    @GetMapping("page")
+    public BaseResponse page(@RequestParam(value = "page", defaultValue = "1") int page,
+                             @RequestParam(value = "size", defaultValue = "10") int size,
+                             @RequestParam(value = "pid", defaultValue = "-1") int pid,
+                             @RequestParam(value = "beginTm", defaultValue = "-1") long beginTm,
+                             @RequestParam(value = "endTm", defaultValue = "-1") long endTm) {
+        Map<String, Object> pageMap = processNetService.page(page, size, pid, beginTm, endTm);
+        return BaseResponse.createBySuccess(pageMap);
     }
 
 }
