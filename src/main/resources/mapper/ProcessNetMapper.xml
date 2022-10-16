@@ -11,11 +11,12 @@
         <result column="foreign_address" property="foreignAddress" />
         <result column="state" property="state" />
         <result column="pid_program_name" property="pidProgramName" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pid, proto, local_address, foreign_address, state, pid_program_name
+        id, pid, proto, local_address, foreign_address, state, pid_program_name, create_time
     </sql>
 
 </mapper>

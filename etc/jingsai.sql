@@ -2,6 +2,7 @@ USE jingsai;
 
 DROP TABLE IF EXISTS `process_info` CASCADE;
 DROP TABLE IF EXISTS `process_net` CASCADE;
+DROP TABLE IF EXISTS `netcard_traffic` CASCADE;
 
 CREATE TABLE `process_info` (
     `id` INT COMMENT 'ID',
@@ -17,7 +18,7 @@ CREATE TABLE `process_info` (
     `mem` DOUBLE COMMENT '进程使用的物理内存百分比',
     `time` VARCHAR(64) COMMENT '进程使用的CPU时间总计,单位1/100秒',
     `command` VARCHAR(64) COMMENT '命令名/命令行',
-    `record_time` datetime COMMENT '记录的时间',
+    `create_time` datetime COMMENT '记录的时间',
     PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
 
@@ -29,5 +30,20 @@ CREATE TABLE `process_net` (
     `foreign_address` VARCHAR(256) COMMENT '外部地址',
     `state` VARCHAR(64) COMMENT '连接地址',
     `pid_program_name` VARCHAR(256) COMMENT '进程ID和程序名称',
+    `create_time` datetime COMMENT '记录的时间',
     PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE `netcard_traffic` (
+    `id` INT COMMENT 'ID',
+    `nic` INT COMMENT '网卡名称',
+    `status` VARCHAR(64) COMMENT '网卡状态',
+    `rx` BIGINT COMMENT '接收流速',
+    `tx` BIGINT COMMENT '发送流速',
+    `rx_bytes` BIGINT COMMENT '接收总流量',
+    `tx_bytes` BIGINT COMMENT '发送总流量',
+    `create_time` datetime COMMENT '记录的时间',
+    PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+

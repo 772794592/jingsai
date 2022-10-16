@@ -17,12 +17,43 @@
         <result column="mem" property="mem" />
         <result column="time" property="time" />
         <result column="command" property="command" />
-        <result column="record_time" property="recordTime" />
+        <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, pid, user, pr, ni, virt, res, shr, s, cpu, mem, time, command, record_time
+        id, pid, user, pr, ni, virt, res, shr, s, cpu, mem, time, command, create_time
     </sql>
+    
+    <insert id="saveBatch" >
+        INSERT INTO process_info
+        (<include refid="Base_Column_List"/>)
+        VALUES
+        <foreach collection="list" item="processInfo" separator="," open="(" close=")">
+            #{processInfo.pid},
+            #{processInfo.user},
+            #{processInfo.pr},
+            #{processInfo.ni},
+            #{processInfo.virt},
+            #{processInfo.res},
+            #{processInfo.shr},
+            #{processInfo.s},
+            #{processInfo.cpu},
+            #{processInfo.mem},
+            #{processInfo.time},
+            #{processInfo.command},
+            #{processInfo.createTime}
+        </foreach>
+    </insert>
+
+    <select id="selectByMaxId" resultType="com.example.jingsai.model.ProcessInfo">
+        SELECT <include refid="Base_Column_List"/>
+        FROM process_info
+        WHERE pid = #{pid} AND id IN (SELECT max(id) FROM process_info);
+    </select>
+
+    <delete id="rollback">
+        DELETE FROM process_info ORDER BY id LIMIT #{delCount}
+    </delete>
 
 </mapper>

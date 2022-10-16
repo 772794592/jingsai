@@ -22,7 +22,7 @@ public class MyBatisPlusGenerator {
                             .xml("xml");
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("process_info", "process_net"); // 设置需要生成的表名
+                    builder.addInclude("process_info", "process_net", "netcard_traffic"); // 设置需要生成的表名
 //                            .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                     builder.mapperBuilder()
                             .enableBaseColumnList()

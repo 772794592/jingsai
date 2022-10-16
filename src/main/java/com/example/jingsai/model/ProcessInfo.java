@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author hejie
- * @since 2022-10-12
+ * @since 2022-10-14
  */
 @TableName("process_info")
 public class ProcessInfo implements Serializable {
@@ -85,7 +85,7 @@ public class ProcessInfo implements Serializable {
     /**
      * 记录的时间
      */
-    private LocalDateTime recordTime;
+    private LocalDateTime createTime;
 
     public Integer getId() {
         return id;
@@ -178,12 +178,12 @@ public class ProcessInfo implements Serializable {
     public void setCommand(String command) {
         this.command = command;
     }
-    public LocalDateTime getRecordTime() {
-        return recordTime;
+    public LocalDateTime getCreateTime() {
+        return createTime;
     }
 
-    public void setRecordTime(LocalDateTime recordTime) {
-        this.recordTime = recordTime;
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 
     @Override
@@ -202,7 +202,7 @@ public class ProcessInfo implements Serializable {
             ", mem=" + mem +
             ", time=" + time +
             ", command=" + command +
-            ", recordTime=" + recordTime +
+            ", createTime=" + createTime +
         "}";
     }
 }

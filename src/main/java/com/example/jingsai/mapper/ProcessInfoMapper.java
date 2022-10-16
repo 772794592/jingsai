@@ -3,6 +3,8 @@ package com.example.jingsai.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.jingsai.model.ProcessInfo;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -13,4 +15,9 @@ import com.example.jingsai.model.ProcessInfo;
  */
 public interface ProcessInfoMapper extends BaseMapper<ProcessInfo> {
 
+    int saveBatch(List<ProcessInfo> list);
+
+    ProcessInfo selectByMaxId(int pid);
+
+    void rollback(int delCount);
 }

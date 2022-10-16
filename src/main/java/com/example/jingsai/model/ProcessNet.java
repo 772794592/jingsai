@@ -2,6 +2,7 @@ package com.example.jingsai.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -9,7 +10,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author hejie
- * @since 2022-10-12
+ * @since 2022-10-14
  */
 @TableName("process_net")
 public class ProcessNet implements Serializable {
@@ -50,6 +51,11 @@ public class ProcessNet implements Serializable {
      * 进程ID和程序名称
      */
     private String pidProgramName;
+
+    /**
+     * 记录的时间
+     */
+    private LocalDateTime createTime;
 
     public Integer getId() {
         return id;
@@ -100,6 +106,13 @@ public class ProcessNet implements Serializable {
     public void setPidProgramName(String pidProgramName) {
         this.pidProgramName = pidProgramName;
     }
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 
     @Override
     public String toString() {
@@ -111,6 +124,7 @@ public class ProcessNet implements Serializable {
             ", foreignAddress=" + foreignAddress +
             ", state=" + state +
             ", pidProgramName=" + pidProgramName +
+            ", createTime=" + createTime +
         "}";
     }
 }
