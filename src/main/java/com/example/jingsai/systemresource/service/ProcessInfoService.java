@@ -1,6 +1,9 @@
 package com.example.jingsai.systemresource.service;
 
+import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.utils.BaseResponse;
+
+import java.util.List;
 
 /**
  * @author: shigw
@@ -25,6 +28,6 @@ public interface ProcessInfoService {
      */
     BaseResponse queryProcess();
 
-    BaseResponse query(String beginTime, String endTime, String serviceName);
+    List<ProcessInfo> query(String beginTime, String endTime, String serviceName);
 
 }

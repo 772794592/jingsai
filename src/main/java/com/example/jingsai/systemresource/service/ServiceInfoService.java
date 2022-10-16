@@ -3,6 +3,8 @@ package com.example.jingsai.systemresource.service;
 import com.example.jingsai.systemresource.pojo.ServiceInfo;
 import com.example.jingsai.systemresource.utils.BaseResponse;
 
+import java.util.List;
+
 /**
  * @author: shigw
  * @Date:2022-10-13 14:35
@@ -13,7 +15,7 @@ public interface ServiceInfoService {
      * 查询出所有服务信息
      * @return
      */
-    BaseResponse query();
+    List<ServiceInfo> query();
 
     /***
      * 添加服务
