@@ -18,7 +18,6 @@ public class PageRequestTestController {
     @GetMapping("query")
     public List<User> query() {
         List<User> users = service.queryUser();
-        System.out.print(users);
         return users;
     }
 }
