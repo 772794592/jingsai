@@ -22,7 +22,7 @@ public class ProcessInfoController {
     private ProcessInfoService processInfoService;
 
     /***
-     * 根据条件查询出进程信息
+     * 根据条件查询出历史进程信息
      */
     @GetMapping("queryBytime")
     public BaseResponse query(@RequestBody String data)  {
@@ -37,7 +37,7 @@ public class ProcessInfoController {
     }
 
     /***
-     * 查看进程的占用系统资源
+     * 实时查看进程的占用系统资源
      * @param serviceName
      * @return
      */
