@@ -4,9 +4,9 @@ import com.example.jingsai.enums.CodeEnum;
 import com.example.jingsai.systemresource.dao.ServiceInfoDao;
 import com.example.jingsai.systemresource.pojo.ServiceInfo;
 import com.example.jingsai.systemresource.service.ServiceInfoService;
-import com.example.jingsai.utils.BaseResponse;
-import com.example.jingsai.utils.CommandUtil;
-import com.example.jingsai.utils.EntityUtils;
+import com.example.jingsai.systemresource.utils.BaseResponse;
+import com.example.jingsai.systemresource.utils.CommandUtil;
+import com.example.jingsai.systemresource.utils.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -51,6 +51,8 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
         } catch (Exception e) {
             e.printStackTrace();
             log.info("add service error {}", e.getMessage());
+            //回滚
+            //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return BaseResponse.createByError(CodeEnum.ADD_SERVICE_ERROR);
     }

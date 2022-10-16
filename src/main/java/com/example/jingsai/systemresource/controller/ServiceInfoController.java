@@ -2,11 +2,10 @@ package com.example.jingsai.systemresource.controller;
 
 import com.example.jingsai.systemresource.pojo.ServiceInfo;
 import com.example.jingsai.systemresource.service.ServiceInfoService;
-import com.example.jingsai.utils.BaseResponse;
+import com.example.jingsai.systemresource.utils.BaseResponse;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author: shigw

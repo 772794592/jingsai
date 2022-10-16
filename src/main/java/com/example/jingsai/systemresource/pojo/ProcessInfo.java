@@ -4,6 +4,7 @@ package com.example.jingsai.systemresource.pojo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * <p>
@@ -50,7 +51,7 @@ public class ProcessInfo implements Serializable {
     /**
      * 进程使用的，未被换出的物理内存大小，单位kb
      */
-    private Integer res;
+    private String res;
 
     /**
      * 共享内存大小
@@ -85,7 +86,7 @@ public class ProcessInfo implements Serializable {
     /**
      * 记录的时间
      */
-    private LocalDateTime recordTime;
+    private long recordTime;
 
     private String service_name;
 
@@ -139,13 +140,15 @@ public class ProcessInfo implements Serializable {
     public void setVirt(Integer virt) {
         this.virt = virt;
     }
-    public Integer getRes() {
+
+    public String getRes() {
         return res;
     }
 
-    public void setRes(Integer res) {
+    public void setRes(String res) {
         this.res = res;
     }
+
     public Integer getShr() {
         return shr;
     }
@@ -188,11 +191,13 @@ public class ProcessInfo implements Serializable {
     public void setCommand(String command) {
         this.command = command;
     }
-    public LocalDateTime getRecordTime() {
+
+
+    public long getRecordTime() {
         return recordTime;
     }
 
-    public void setRecordTime(LocalDateTime recordTime) {
+    public void setRecordTime(long recordTime) {
         this.recordTime = recordTime;
     }
 

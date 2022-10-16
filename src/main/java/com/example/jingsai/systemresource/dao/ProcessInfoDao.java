@@ -30,9 +30,12 @@ public interface ProcessInfoDao {
      * @param processInfo
      * @return
      */
-    @Insert("INSERT INTO process_info (pid,user,pr,ni,virt,res,shr,s,cpu,mem,time,command,record_time) VALUES " +
-            "(#{pid},#{user},#{pr},#{ni},#{virt},#{res},#{shr},#{s},#{cpu},#{mem},#{time},#{command},#{record_time})")
+    @Insert("INSERT INTO process_info (pid,service_name,user,pr,ni,virt,res,shr,s,cpu,mem,time,command,record_time) VALUES " +
+            "(#{pid},#{service_name},#{user},#{pr},#{ni},#{virt},#{res},#{shr},#{s},#{cpu},#{mem},#{time},#{command},#{recordTime})")
     int addProcess(ProcessInfo processInfo);
+
+    @Select("SELECT * FROM process_info WHERE   id = (SELECT MAX(id) FROM process_info WHERE service_name =#{serviceName})")
+    ProcessInfo queryMaxData(String serviceName);
 
     //TODO 日志回滚每10万条数据回滚5万条
 

@@ -2,10 +2,11 @@ package com.example.jingsai.systemresource.service.impl;
 
 import com.example.jingsai.enums.CodeEnum;
 import com.example.jingsai.systemresource.dao.ProcessInfoDao;
+import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.service.ProcessInfoService;
-import com.example.jingsai.utils.BaseResponse;
-import com.example.jingsai.utils.CommandUtil;
-import com.example.jingsai.utils.EntityUtils;
+import com.example.jingsai.systemresource.utils.BaseResponse;
+import com.example.jingsai.systemresource.utils.CommandUtil;
+import com.example.jingsai.systemresource.utils.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,25 +39,16 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
 
     /***
      * 查看进程的占用系统资源
-     * @param service
+     * @param serviceName
      * @return
      */
     @Override
-    public BaseResponse queryByname(String service) {
+    public BaseResponse queryByname(String serviceName) {
         try {
-            if (service != null || !"".equals(service)) {
-                CommandUtil.ExecReturn severPid = CommandUtil.exec(new String[]{"pgerp", "-f", service});
-                if (severPid.exitCode != 0 || "".equals(severPid.stdout)) {
-                    return BaseResponse.createByError(CodeEnum.EC_GEN_INTERNAL);
-                }
-                CommandUtil.ExecReturn execReturn = CommandUtil.exec(new String[]{"kill", "-0", severPid.stdout});
-                if (execReturn.exitCode != 0 || execReturn.stdout == null) {
-                    return BaseResponse.createByError(CodeEnum.PROCESS_IS_NOT);
-                }
-                String[] command = new String[]{"/opt/jdwa/sync/etc/unisync.sh", "get_process", severPid.stdout};
-                CommandUtil.ExecReturn exec = CommandUtil.exec(command);
-                if (exec.exitCode == 0 || (exec.stdout != null || !"".equals(exec.stdout))) {
-                    return BaseResponse.createBySuccess(EntityUtils.getProessMessage(exec.stdout,service));
+            if (serviceName != null || !"".equals(serviceName)) {
+                ProcessInfo processInfo = processInfoDao.queryMaxData(serviceName);
+                if(processInfo != null) {
+                    return BaseResponse.createBySuccess(processInfo);
                 }
             }
         } catch (Exception e) {

@@ -1,17 +1,14 @@
 package com.example.jingsai.systemresource.controller;
 
-import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.service.ProcessInfoService;
-import com.example.jingsai.utils.BaseResponse;
+import com.example.jingsai.systemresource.utils.BaseResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
+
 /**
  * @author: shigw
  * @Date:2022-10-12 14:50
@@ -33,11 +30,11 @@ public class ProcessInfoController {
 
     /***
      * 查看进程的占用系统资源
-     * @param service
+     * @param serviceName
      * @return
      */
     @GetMapping("queryByname")
-    public BaseResponse queryByname(@RequestParam("service") String service)  {
-        return processInfoService.queryByname(service);
+    public BaseResponse queryByname(@RequestParam("serviceName") String serviceName)  {
+        return processInfoService.queryByname(serviceName);
     }
 }

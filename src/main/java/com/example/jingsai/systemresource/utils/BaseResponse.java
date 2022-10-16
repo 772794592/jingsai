@@ -1,4 +1,4 @@
-package com.example.jingsai.utils;
+package com.example.jingsai.systemresource.utils;
 
 import com.example.jingsai.enums.CodeEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,10 +1,6 @@
 package com.example.jingsai.systemresource.service;
 
-import com.example.jingsai.systemresource.pojo.ProcessInfo;
-import com.example.jingsai.utils.BaseResponse;
-
-import java.util.Date;
-import java.util.List;
+import com.example.jingsai.systemresource.utils.BaseResponse;
 
 /**
  * @author: shigw
@@ -17,10 +13,10 @@ public interface ProcessInfoService {
 
     /***
      * Llinux 查看进程的占用系统资源(未进行数据库交互)
-     * @param service
+     * @param serviceName
      * @return
      */
-    BaseResponse queryByname(String service);
+    BaseResponse queryByname(String serviceName);
 
 
     /***

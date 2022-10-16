@@ -1,4 +1,4 @@
-package com.example.jingsai.utils;
+package com.example.jingsai.systemresource.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
