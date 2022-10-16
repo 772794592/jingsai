@@ -10,6 +10,7 @@ import com.example.jingsai.systemresource.utils.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -33,8 +34,8 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
     }
 
     @Override
-    public BaseResponse query(String beginTime, String endTime, String serviceName) {
-        return BaseResponse.createBySuccess(processInfoDao.query(beginTime,endTime,serviceName));
+    public List<ProcessInfo> query(String beginTime, String endTime, String serviceName) {
+        return processInfoDao.query(beginTime,endTime,serviceName);
     }
 
     /***

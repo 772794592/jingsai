@@ -1,10 +1,7 @@
 package com.example.jingsai.systemresource.dao;
 
 import com.example.jingsai.systemresource.pojo.ProcessInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 import java.util.List;
@@ -22,8 +19,8 @@ public interface ProcessInfoDao {
      */
     @Select("select * from process_info")
     List<ProcessInfo> queryProcess();
-    @Select("SELECT * FROM `process_info` where  service_name = #{serviceName} and record_time BETWEEN  #{beginTime}  AND #{endTime} ")
-    List<ProcessInfo> query(@Param("beginTime") String beginTime,@Param("endTime") String endTime,@Param("serviceName") String serviceName);
+    //@Select("SELECT * FROM `process_info` where  service_name = #{serviceName} and record_time BETWEEN  #{beginTime}  AND #{endTime} ")
+    List<ProcessInfo> query(String beginTime,String endTime,String serviceName);
 
     /***
      * 添加进程资源占用
@@ -34,9 +31,25 @@ public interface ProcessInfoDao {
             "(#{pid},#{service_name},#{user},#{pr},#{ni},#{virt},#{res},#{shr},#{s},#{cpu},#{mem},#{time},#{command},#{recordTime})")
     int addProcess(ProcessInfo processInfo);
 
+    /***
+     * 查询进程最新的一条数据
+     * @param serviceName
+     * @return
+     */
     @Select("SELECT * FROM process_info WHERE   id = (SELECT MAX(id) FROM process_info WHERE service_name =#{serviceName})")
     ProcessInfo queryMaxData(String serviceName);
 
-    //TODO 日志回滚每10万条数据回滚5万条
+    /***
+     * 查询数据总数
+     * @return
+     */
+    @Select("select count(id) from process_info")
+    int queryTotalCount();
 
+    /***
+     * 每十万条删除5万旧数据保留5万最新数据
+     * @return
+     */
+    @Delete("DELETE FROM process_info WHERE id in (SELECT id FROM ( SELECT id FROM process_info ORDER BY id ASC LIMIT 0, 50000)  t)")
+    int delProcessData();
 }

@@ -29,9 +29,9 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
 
 
     @Override
-    public BaseResponse query() {
+    public List<ServiceInfo> query() {
         updateStatus();
-        return BaseResponse.createBySuccess(serviceInfoDao.query());
+        return serviceInfoDao.query();
     }
 
     @Override
@@ -42,8 +42,9 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
             if (exec.exitCode == 0) {
                 if (exec.equals("failed")) {
                     serviceInfo.setService_status(1);
+                }else{
+                    serviceInfo.setService_status(0);
                 }
-                serviceInfo.setService_status(0);
                 serviceInfo.setRecord_time(LocalDateTime.now());
                 serviceInfoDao.addService(serviceInfo);
                 return BaseResponse.createBySuccess();
