@@ -16,7 +16,7 @@ public interface ProcessInfoService {
 
     void saveBatch(String stdout);
 
-    Map<String, Object> page(int i, int page, int size, long beginTm, long endTm);
+    Map<String, Object> page(int page, int size, int pid, long beginTm, long endTm);
 
     ProcessInfo detail(int pid);
 

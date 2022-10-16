@@ -7,6 +7,8 @@ import com.example.jingsai.constant.PageField;
 import com.example.jingsai.mapper.ProcessNetMapper;
 import com.example.jingsai.model.ProcessNet;
 import com.example.jingsai.service.ProcessNetService;
+import com.example.jingsai.utils.TimeUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,10 +49,10 @@ public class ProcessNetServiceImpl implements ProcessNetService {
             queryWrapper.eq("pid", pid);
         }
         if (beginTm != -1) {
-            queryWrapper.gt("create_time", beginTm);
+            queryWrapper.gt("create_time", TimeUtil.format(beginTm));
         }
         if (endTm != -1) {
-            queryWrapper.lt("create_time", endTm);
+            queryWrapper.lt("create_time", TimeUtil.format(endTm));
         }
 
         IPage<ProcessNet> processNetIPage = processNetMapper.selectPage(pageInfo, queryWrapper);
@@ -65,6 +67,44 @@ public class ProcessNetServiceImpl implements ProcessNetService {
     @Override
     public ProcessNet detail(int pid) {
         return processNetMapper.selectByMaxId(pid);
+    }
+
+    @Override
+    public Map<String, Object> statistics(int pid, long beginTm, long endTm) {
+        QueryWrapper<ProcessNet> queryWrapper = new QueryWrapper<>();
+
+        if (pid != -1) {
+            queryWrapper.eq("pid", pid);
+        }
+        if (beginTm != -1) {
+            queryWrapper.gt("create_time", TimeUtil.format(beginTm));
+        }
+        if (endTm != -1) {
+            queryWrapper.lt("create_time", TimeUtil.format(endTm));
+        }
+
+        QueryWrapper<ProcessNet> establishedQuery = new QueryWrapper<>();
+        QueryWrapper<ProcessNet> timeWaitQuery = new QueryWrapper<>();
+        QueryWrapper<ProcessNet> tcpQuery = new QueryWrapper<>();
+        QueryWrapper<ProcessNet> udpQuery = new QueryWrapper<>();
+
+        BeanUtils.copyProperties(queryWrapper, establishedQuery);
+        BeanUtils.copyProperties(queryWrapper, timeWaitQuery);
+
+        long total = processNetMapper.selectCount(queryWrapper);
+        long established = processNetMapper.selectCount(establishedQuery.eq("state", "ESTABLISHED"));
+        long timeWait = processNetMapper.selectCount(timeWaitQuery.eq("state", "TIME_WAIT"));
+        long tcp = processNetMapper.selectCount(timeWaitQuery.like("proto", "tcp%"));
+        long udp = processNetMapper.selectCount(timeWaitQuery.like("proto", "udp%"));
+
+        Map<String, Object> netstat = new HashMap<>();
+        netstat.put("total", total);
+        netstat.put("established", established);
+        netstat.put("timeWait", timeWait);
+        netstat.put("tcp", tcp);
+        netstat.put("udp", udp);
+
+        return netstat;
     }
 
     @Override

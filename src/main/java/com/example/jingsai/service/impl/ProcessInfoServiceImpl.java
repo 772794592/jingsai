@@ -7,6 +7,7 @@ import com.example.jingsai.constant.PageField;
 import com.example.jingsai.mapper.ProcessInfoMapper;
 import com.example.jingsai.model.ProcessInfo;
 import com.example.jingsai.service.ProcessInfoService;
+import com.example.jingsai.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -49,10 +50,10 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
             queryWrapper.eq("pid", pid);
         }
         if (beginTm != -1) {
-            queryWrapper.gt("create_time", beginTm);
+            queryWrapper.gt("create_time", TimeUtil.format(beginTm));
         }
         if (endTm != -1) {
-            queryWrapper.lt("create_time", endTm);
+            queryWrapper.lt("create_time", TimeUtil.format(endTm));
         }
 
         IPage<ProcessInfo> processInfoIPage = processInfoMapper.selectPage(pageInfo, queryWrapper);
