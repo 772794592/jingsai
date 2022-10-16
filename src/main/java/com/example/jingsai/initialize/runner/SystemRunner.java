@@ -33,8 +33,8 @@ public class SystemRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         ScheduledExecutorService scheduledExecutorService = threadPoolService.getScheduledService();
-        scheduledExecutorService.scheduleWithFixedDelay(processInfoTask, 10, 1, TimeUnit.SECONDS);
-        scheduledExecutorService.scheduleWithFixedDelay(processNetTask, 10, 1, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(processInfoTask, 10, 2, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(processNetTask, 10, 2, TimeUnit.SECONDS);
         scheduledExecutorService.scheduleWithFixedDelay(processInfoRollBackTask, 10, 10, TimeUnit.SECONDS);
         scheduledExecutorService.scheduleWithFixedDelay(processNetRollBackTask, 10, 10, TimeUnit.SECONDS);
     }

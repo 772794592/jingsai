@@ -83,26 +83,32 @@ public class ProcessNetServiceImpl implements ProcessNetService {
             queryWrapper.lt("create_time", TimeUtil.format(endTm));
         }
 
-        QueryWrapper<ProcessNet> establishedQuery = new QueryWrapper<>();
-        QueryWrapper<ProcessNet> timeWaitQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> tcpQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> udpQuery = new QueryWrapper<>();
+        QueryWrapper<ProcessNet> establishedQuery = new QueryWrapper<>();
+        QueryWrapper<ProcessNet> timeWaitQuery = new QueryWrapper<>();
+        QueryWrapper<ProcessNet> tcpEstablishedQuery = new QueryWrapper<>();
 
+        BeanUtils.copyProperties(queryWrapper, tcpQuery);
+        BeanUtils.copyProperties(queryWrapper, udpQuery);
         BeanUtils.copyProperties(queryWrapper, establishedQuery);
         BeanUtils.copyProperties(queryWrapper, timeWaitQuery);
+        BeanUtils.copyProperties(queryWrapper, tcpEstablishedQuery);
 
+        long tcp = processNetMapper.selectCount(tcpQuery.like("proto", "tcp%"));
+        long udp = processNetMapper.selectCount(udpQuery.like("proto", "udp%"));
         long total = processNetMapper.selectCount(queryWrapper);
         long established = processNetMapper.selectCount(establishedQuery.eq("state", "ESTABLISHED"));
         long timeWait = processNetMapper.selectCount(timeWaitQuery.eq("state", "TIME_WAIT"));
-        long tcp = processNetMapper.selectCount(timeWaitQuery.like("proto", "tcp%"));
-        long udp = processNetMapper.selectCount(timeWaitQuery.like("proto", "udp%"));
+        long tcpEstablished = processNetMapper.selectCount(tcpEstablishedQuery.like("proto", "tcp%").eq("state", "ESTABLISHED"));
 
         Map<String, Object> netstat = new HashMap<>();
+        netstat.put("tcp", tcp);
+        netstat.put("udp", udp);
         netstat.put("total", total);
         netstat.put("established", established);
         netstat.put("timeWait", timeWait);
-        netstat.put("tcp", tcp);
-        netstat.put("udp", udp);
+        netstat.put("tcpEstablished", tcpEstablished);
 
         return netstat;
     }
