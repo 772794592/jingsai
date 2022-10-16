@@ -5,7 +5,8 @@ public enum CodeEnum {
     EC_GEN_INTERNAL(0x00101002, "操作失败"),
     PROCESS_IS_NOT(0x00101003,"该进程不存在！"),
     DEL_SERVICE_ERROR(0x00101004,"删除失败！"),
-    ADD_SERVICE_ERROR(0x00101004,"添加失败！");
+    ADD_SERVICE_ERROR(0x00101004,"添加失败！"),
+    ADD_SERVICE_ISNULL(0x00101004,"该服务不存在！");
 
     private int code;
     private String desc;

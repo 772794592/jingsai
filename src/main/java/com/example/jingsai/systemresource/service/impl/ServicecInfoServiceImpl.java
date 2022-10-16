@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,16 +40,17 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
         try {
             String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getService_name()};
             CommandUtil.ExecReturn exec = CommandUtil.exec(command);
-            if (exec.exitCode == 0) {
+            if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
                 if (exec.equals("failed")) {
                     serviceInfo.setService_status(1);
                 }else{
                     serviceInfo.setService_status(0);
                 }
-                serviceInfo.setRecord_time(LocalDateTime.now());
+                serviceInfo.setRecord_time(new Date().getTime());
                 serviceInfoDao.addService(serviceInfo);
                 return BaseResponse.createBySuccess();
             }
+            return BaseResponse.createByError(CodeEnum.ADD_SERVICE_ISNULL);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("add service error {}", e.getMessage());
