@@ -71,7 +71,7 @@ public class TcpServiceImpl implements TcpService {
             throw new CustomException(BaseEnum.PID_ISNULL.getResultCode(), BaseEnum.PID_ISNULL.getResultMsg());
         }
         String[] cmd = {"sh", "-c", "netstat -anp|grep " + pid + "|awk '{print $1,$4,$5,$6,$7,$8}'"};
-        String stdout = "tcp6 192.168.50.134:80 :::* LISTEN 1008/java \n" +
+        /*String stdout = "tcp6 192.168.50.134:80 :::* LISTEN 1008/java \n" +
                 "tcp6 244.255.255.244:5009 :::* LISTEN 1008/java \n" +
                 "tcp6 244.255.255.244:6005 :::* LISTEN 1008/java \n" +
                 "tcp6 192.168.50.134:443 :::* LISTEN 1008/java \n" +
@@ -82,9 +82,9 @@ public class TcpServiceImpl implements TcpService {
                 "tcp6 244.255.255.244:52800 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
                 "tcp6 244.255.255.244:52836 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
                 "unix ] STREAM CONNECTED 200786021 1008/java\n" +
-                "unix ] STREAM CONNECTED 200794700 1008/java";
-//        ExecResult exec = ExecResult.exec(cmd);
-//        String stdout = exec.stdout;
+                "unix ] STREAM CONNECTED 200794700 1008/java";*/
+        ExecResult exec = ExecResult.exec(cmd);
+        String stdout = exec.stdout;
 //        logger.info("tcp的stdout {}", stdout);
 
         BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(stdout.getBytes()), StandardCharsets.UTF_8));
@@ -158,6 +158,8 @@ public class TcpServiceImpl implements TcpService {
         }
         return ports;
     }
+
+
 
     @Override
     public List<Message> queryAll(String pid) {

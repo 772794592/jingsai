@@ -1,11 +1,13 @@
 package com.example.jingsai.tcp.controller;
 
+import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.pojo.Message;
+import com.example.jingsai.tcp.pojo.ServiceInfo;
+import com.example.jingsai.tcp.service.ServiceInfoService;
+import com.example.jingsai.tcp.vo.ServiceVo;
 import com.example.jingsai.tcp.service.TcpService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.jingsai.tcp.vo.ServiceInfoVo;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -24,6 +26,9 @@ public class TcpController {
 
     @Resource
     private TcpService tcpService;
+
+    @Resource
+    private ServiceInfoService serviceInfoService;
 
     /**
      * 通过服务名获取服务pid
@@ -74,6 +79,33 @@ public class TcpController {
         return tcpService.queryAll(pid);
     }
 
+    @RequestMapping("/serviceInfo/{pid}")
+    public Result<?> getServiceInfo(@PathVariable String pid){
+        ServiceInfoVo serviceVo = new ServiceInfoVo();
+//        serviceVo.setServiceName(tcpService.);
 
+
+
+        return Result.success(null);
+    }
+
+    // 添加网络资源
+    @RequestMapping("/addService")
+    public Result<?> addNetResource(@RequestBody ServiceVo serviceVo) throws IOException, InterruptedException {
+        serviceInfoService.addService(serviceVo);
+        return Result.success();
+    }
+    // 查询
+    @RequestMapping("/queryService")
+    public Result<?> queryService() {
+        return Result.success(serviceInfoService.queryService());
+    }
+    // 查询/分页
+    @RequestMapping("/findServiceInfoPage")
+    public Result<?> findServiceInfoPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                         @RequestParam(defaultValue = "10") Integer pageSize,
+                                         @RequestParam(defaultValue = "") String search) {
+        return Result.success(serviceInfoService.findServiceInfoPage(pageNum,pageSize,search));
+    }
 
 }
