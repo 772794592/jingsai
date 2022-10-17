@@ -48,12 +48,16 @@
           padding: 0;
           height:100%;
         }
+
+        .table-style /deep/ .el-table-column--selection.is-leaf .el-checkbox {
+            display: none;
+        }
     </style>
 </head>
     <body>
         <div id="app">
             <el-container>
-                <el-header>进程占用资源管理</el-header>
+                <el-header id = "title">进程占用资源管理</el-header>
                 <el-container>
                     <el-aside width="200px">Aside</el-aside>
                     <el-main>
@@ -62,33 +66,31 @@
                                 <el-col :span="16" style="text-align: left">
                                     <el-button @click="add">添加</el-button>
                                     <el-button @click="del">删除</el-button>
-                                    <el-button @click="open3">刷新</el-button>
+                                    <el-button @click="queryService">刷新</el-button>
                                 </el-col>
                             </el-row>
                             <el-row>
-                                <el-table :data="index">
-                                    <el-table-column
-                                            type="selection"
-                                            width="55">
+                                <el-table :data="allService" :height="tableHeight" ref="tb" class="table-style" @selection-change="handleSelectionChange">
+                                    <el-table-column type="selection" width="55">
                                     </el-table-column>
-                                    <el-table-column prop="patientNo" label="ID">
+                                    <el-table-column prop="id" label="ID">
                                     </el-table-column>
-                                    <el-table-column prop="patientNo" label="服务名">
+                                    <el-table-column prop="service_name" label="服务名">
                                     </el-table-column>
                                     <!--<el-table-column prop="patientNo" label="PID">
                                     </el-table-column>-->
                                     <el-table-column label="服务状态">
                                         <template v-slot:default="v">
-                                            <i v-if="v.row.patientNo==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
-                                            <i v-if="v.row.patientNo==2" class="el-icon-circle-check"  style="color:greenyellow;font-size:30px"></i>
+                                            <i v-if="v.row.service_status==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
+                                            <i v-if="v.row.service_status==0" class="el-icon-circle-check"  style="color:greenyellow;font-size:30px"></i>
                                         </template>
 
                                     </el-table-column>
                                     <el-table-column label="功能">
-                                        <template slot-scope="scope">
+                                        <template v-slot:default="v">
                                             <div style="line-height: 1; font-size: 0;">
-                                                <el-button size="mini" @click="dialogVisible=true">查看详情</el-button>
-                                                <el-button size="mini" @click="dialogVisible2=true">其它</el-button>
+                                                <el-button size="mini" @click="seeDetail(v.row.service_name)">查看详情</el-button>
+                                                <el-button size="mini" @click="">其它</el-button>
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -97,9 +99,10 @@
                             <el-row style="text-align: right">
                                 <el-pagination
                                         :current-page.sync="currentPage1"
-                                        :page-size="100"
-                                        layout="total, prev, pager, next"
-                                        :total="1000">
+                                        :page-sizes="[10, 30, 50, 100]"
+                                        :page-size="10"
+                                        layout="total, prev, pager, next, jumper"
+                                        :total="count">
                                 </el-pagination>
                             </el-row>
                         </div>
@@ -110,8 +113,8 @@
                                 </el-col>
                                 <el-col :span="6">
                                 <el-form :model="services" :rules="servicesRule" ref="ruleForm" label-width="80px">
-                                    <el-form-item label="服务名称" prop="name">
-                                        <el-input v-model="services.name"></el-input>
+                                    <el-form-item label="服务名称" prop="service_name">
+                                        <el-input v-model="services.service_name"></el-input>
                                     </el-form-item>
                                     <!--<el-form-item label="PID">
                                         <el-input v-model="services.pid"></el-input>
@@ -130,37 +133,37 @@
                                 width="50%">
                             <el-form label-width="140px" style="text-align: left">
                                 <el-form-item label="进程ID">
-                                    test
+                                    {{detailed.pid}}
                                 </el-form-item>
                                 <el-form-item label="进程所有者用户">
-                                    test
+                                    {{detailed.user}}
                                 </el-form-item>
                                 <el-form-item label="进程优先级">
-                                    test
+                                    {{detailed.pr}}
                                 </el-form-item>
                                 <el-form-item label="虚拟内存">
-                                    test
+                                    {{detailed.virt}}kb
                                 </el-form-item>
                                 <el-form-item label="物理内存">
-                                    test
+                                    {{detailed.res}}kb
                                 </el-form-item>
                                 <el-form-item label="共享内存">
-                                    test
+                                    {{detailed.shr}}kb
                                 </el-form-item>
                                 <el-form-item label="进程状态">
-                                    test
+                                    {{detailed.s}}
                                 </el-form-item>
                                 <el-form-item label="CPU占用百分比">
-                                    test
+                                    {{detailed.cpu}}%
                                 </el-form-item>
                                 <el-form-item label="物理内存占用百分比">
-                                    test
+                                    {{detailed.mem}}%
                                 </el-form-item>
                                 <el-form-item label="CPU时间总计">
-                                    test
+                                    {{detailed.time}}
                                 </el-form-item>
                                 <el-form-item label="命令名">
-                                    test
+                                    {{detailed.command}}
                                 </el-form-item>
                             </el-form>
                         </el-dialog>
@@ -203,10 +206,12 @@
                                     </el-table-column>
                                 </el-table>
                                 <el-pagination
+                                        @size-change="handleSizeChange"
+                                        @current-change="handleCurrentChange"
                                         :current-page.sync="currentPage1"
                                         :page-size="100"
                                         layout="total, prev, pager, next"
-                                        :total="1000">
+                                        :total="count">
                                 </el-pagination>
                             </el-row>
                         </el-dialog>
@@ -216,6 +221,9 @@
         </div>
     </body>
 <script type="text/javascript">
+    function getHeight(){
+        return $(window).height() - $('#title').height() - 200;
+    }
     var vm=new Vue({
         el: '#app',
         data(){
@@ -236,19 +244,46 @@
                 dialogVisible:false,
                 dialogVisible2:false,
                 services: {
-                    name: '',
-                    pid:''
+                    id: '',
+                    service_name:'',
+                    service_status:'',
+                    record_time:''
                 },
                 servicesRule:{
-                    name:[{ validator: checkName, trigger: 'blur' }]
+                    service_name:[{ validator: checkName, trigger: 'blur' }]
                 },
-                currentPage1: 5,
+                allService:[],
+                currentPage1: 1,
+                pageSize:10,
+                pageNum:1,
+                count:0,
+                tableHeight:'',
+                sid:'',
+                detailed: {
+                    command:'',
+                    cpu:'',
+                    id:'',
+                    mem:'',
+                    ni:'',
+                    pid:'',
+                    pr:'',
+                    recordTime:'',
+                    res:'',
+                    s:'',
+                    service_name:'',
+                    shr:'',
+                    time:'',
+                    user:'',
+                    virt:''
+                }
             };
         },
         methods: {
-            open3:function (){
-                axios.get('/test1').then(function (res){
-                    console.log(res);
+            queryService:function (){
+                let data = {"pageNum": this.pageNum+"","pageSize": this.pageSize+""};
+                axios.post('/jingsai/sysservice/query',data).then(function (res){
+                    vm.allService = res.data.respData.list;
+                    vm.count = res.data.respData.count;
                 })
             },
             add:function (){
@@ -258,19 +293,63 @@
             submitForm:function (formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
-                    } else {
+                        axios.post('/jingsai/sysservice/add',this.services).then(function (res){
+                            if (res.data.respCode == 1052673){
+                                vm.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                this.cancel('ruleForm');
+                            } else {
+                                vm.$message({
+                                    message: res.data.respDesc,
+                                    type: 'error'
+                                });
+                            }
+                        });
+                    }/* else {
                         console.log('error submit!!');
                         return false;
-                    }
+                    }*/
                 });
             },
-            seeDetail:function (){
-              if(vm.service.status==1){
+            handleSelectionChange (val) {
+                if (val.length > 1) {
+                    this.$refs.tb.clearSelection()
+                    this.$refs.tb.toggleRowSelection(val.pop())
+                }
+                if (val.length!=0) {
+                    vm.sid = val[0].id;
+                } else {
+                    vm.sid = '';
+                }
+            },
+            seeDetail:function (val){
+                console.log(val);
+             /* if(vm.service.status==1){
                   this.$message.error('服务未运行');
                   return false;
-              }
+              }*/
+                axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                    vm.detailed = res.data.respData;
+                    if(vm.detailed.s == 'D'){
+                        vm.detailed.s == '不可中断的睡眠状态';
+                    } else if (vm.detailed.s == 'R'){
+                        vm.detailed.s == '运行';
+                    } else if (vm.detailed.s == 'S'){
+                        vm.detailed.s == '睡眠';
+                    } else if (vm.detailed.s == 'T'){
+                        vm.detailed.s == '跟踪/停止';
+                    } else if (vm.detailed.s == 'Z'){
+                        vm.detailed.s == '僵尸进程';
+                    }
+                });
               vm.dialogVisible = true;
+              setInterval(function (){
+                  axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                      vm.detailed = res.data.respData;
+                  });
+              },1000);
             },
             cancel:function (formName){
                 $("#showTable").css("display","block");
@@ -278,6 +357,13 @@
                 this.$refs[formName].resetFields();
             },
             del:function (){
+                if (vm.sid == '') {
+                    vm.$message({
+                        message: '请先勾选服务',
+                        type: 'error'
+                    });
+                    return false;
+                }
                 this.$confirm("是否删除服务?", "提示", {
                     iconClass: "el-icon-question", //自定义图标样式
                     confirmButtonText: "确认", //确认按钮文字更换
@@ -287,6 +373,20 @@
                 })
                     .then(function () {  //选择确认进入此方法
                         //确认操作
+                        axios.get('/jingsai/sysservice/del?id='+vm.sid).then(function (res){
+                            if (res.data.respCode == 1052673){
+                                vm.$message({
+                                    message: '删除成功',
+                                    type: 'success'
+                                });
+                                vm.queryService();
+                            } else {
+                                vm.$message({
+                                    message: res.data.respDesc,
+                                    type: 'error'
+                                });
+                            }
+                        });
                     })
                     .then(() => {  //上一个then()执行成功后执行后续方法
                         this.getList();
@@ -297,6 +397,19 @@
                         console.log(err);
                     });
             },
+            handleSizeChange(val) {
+                vm.pageSize = val;
+                this.queryService();
+            },
+            handleCurrentChange(val) {
+                vm.pageNum = val;
+                this.queryService();
+            },
+
+        },
+        created(){
+            this.tableHeight = getHeight();
+            this.queryService();
         }
     })
 </script>

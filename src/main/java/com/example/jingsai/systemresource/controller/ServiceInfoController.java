@@ -21,7 +21,7 @@ public class ServiceInfoController {
     @Resource
     private ServiceInfoService serviceInfoService;
 
-    @GetMapping("query")
+    @PostMapping("query")
     public BaseResponse query(@RequestBody String data)  {
         JSONObject jsonObject = JSONObject.parseObject(data);
         Integer pageSize = jsonObject.getInteger("pageSize");
@@ -38,6 +38,7 @@ public class ServiceInfoController {
      */
     @PostMapping("add")
     public BaseResponse addService(@RequestBody ServiceInfo serviceInfo){
+        System.out.println(serviceInfo.toString());
         return serviceInfoService.addService(serviceInfo);
     }
 
@@ -46,7 +47,7 @@ public class ServiceInfoController {
      * @param id
      * @return
      */
-    @PostMapping("del")
+    @GetMapping("del")
     public BaseResponse delService(@RequestParam int id){
         return serviceInfoService.delService(id);
     }
