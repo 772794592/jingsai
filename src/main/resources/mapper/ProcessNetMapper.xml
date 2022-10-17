@@ -50,4 +50,41 @@
         DELETE FROM process_net ORDER BY id LIMIT #{delCount}
     </delete>
 
+    <select id="selectTcp" resultType="com.example.jingsai.model.ProcessNet">
+        SELECT local_address,foreign_address
+        FROM process_net
+        <where>
+            proto LIKE 'tcp%'
+            <if test="pid != -1">
+                AND pid = #{pid}
+            </if>
+            <if test="beginTm != -1">
+                AND create_time &gt;= #{beginTm}
+            </if>
+            <if test="endTm != -1">
+                AND create_time &lt;= #{endTm}
+            </if>
+        </where>
+        GROUP BY local_address,foreign_address
+    </select>
+
+    <select id="selectTcpEstablished" resultType="com.example.jingsai.model.ProcessNet">
+        SELECT local_address,foreign_address
+        FROM process_net
+        <where>
+            state = 'ESTABLISHED'
+            AND proto LIKE 'tcp%'
+            <if test="pid != -1">
+                AND pid = #{pid}
+            </if>
+            <if test="beginTm != -1">
+                AND create_time &gt;= #{beginTm}
+            </if>
+            <if test="endTm != -1">
+                AND create_time &lt;= #{endTm}
+            </if>
+        </where>
+        GROUP BY local_address,foreign_address
+    </select>
+
 </mapper>

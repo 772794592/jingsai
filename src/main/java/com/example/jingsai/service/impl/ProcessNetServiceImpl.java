@@ -71,28 +71,13 @@ public class ProcessNetServiceImpl implements ProcessNetService {
 
     @Override
     public Map<String, Object> statistics(int pid, long beginTm, long endTm) {
-        QueryWrapper<ProcessNet> tcpQuery = new QueryWrapper<>();
-        QueryWrapper<ProcessNet> tcpEstablishedQuery = new QueryWrapper<>();
 
-        if (pid != -1) {
-            tcpQuery.eq("pid", pid);
-            tcpEstablishedQuery.eq("pid", pid);
-        }
-        if (beginTm != -1) {
-            tcpQuery.gt("create_time", TimeUtil.format(beginTm));
-            tcpEstablishedQuery.gt("create_time", TimeUtil.format(beginTm));
-        }
-        if (endTm != -1) {
-            tcpQuery.lt("create_time", TimeUtil.format(endTm));
-            tcpEstablishedQuery.lt("create_time", TimeUtil.format(endTm));
-        }
-
-        long tcp = processNetMapper.selectCount(tcpQuery.like("proto", "tcp%"));
-        long tcpEstablished = processNetMapper.selectCount(tcpEstablishedQuery.like("proto", "tcp%").eq("state", "ESTABLISHED"));
+        List<ProcessNet> tcp = processNetMapper.selectTcp(pid, beginTm, endTm);
+        List<ProcessNet> tcpEstablished = processNetMapper.selectTcpEstablished(pid, beginTm, endTm);
 
         Map<String, Object> netstat = new HashMap<>();
-        netstat.put("tcp", tcp);
-        netstat.put("tcpEstablished", tcpEstablished);
+        netstat.put("tcp", tcp.size());
+        netstat.put("tcpEstablished", tcpEstablished.size());
 
         return netstat;
     }
