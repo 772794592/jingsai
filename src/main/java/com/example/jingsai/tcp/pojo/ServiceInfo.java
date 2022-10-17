@@ -2,6 +2,7 @@ package com.example.jingsai.tcp.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @version 1.0
  * @since 2022/10/16 11:23
  */
+@TableName("l_service_info")
 public class ServiceInfo {
 
     @TableId(type = IdType.AUTO)

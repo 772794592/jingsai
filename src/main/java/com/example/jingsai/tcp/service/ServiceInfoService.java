@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * 服务信息实现类
  * <p>
  *
  * @author liwen <devinlive@163.com>
@@ -16,15 +17,30 @@ import java.util.List;
  * @since 2022/10/17 11:05
  */
 public interface ServiceInfoService {
+    /**
+     * 添加服务
+     */
+    int addService(ServiceVo serviceVo) throws IOException, InterruptedException;
 
-    public void addService(ServiceVo serviceVo) throws IOException, InterruptedException;
+    /**
+     * 删除服务
+     */
+    int delService(String id);
 
     /**
      * 查询所有
-     * @return
      */
     public List<ServiceInfo> queryService();
 
-    // 分页查询用户，用户带有权限。所以用UserDto
+    /**
+     * 通过id查服务
+     */
+    ServiceInfo selectOne(String id);
+
+    /**
+     * 分页查询服务
+     */
     Page<ServiceInfo> findServiceInfoPage(int pageNum, int pageSize, String search);
+
+
 }

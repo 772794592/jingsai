@@ -8,10 +8,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.vo.ServiceVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,30 +34,45 @@ import java.util.List;
 @Service
 public class ServiceInfoServImpl implements ServiceInfoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(TcpService.class);
+
     @Resource
     private ServiceInfoMapper serviceInfoMapper;
 
     @Resource
     private TcpService tcpService;
 
-    public void addService(ServiceVo serviceVo) throws IOException, InterruptedException {
+    public int addService(ServiceVo serviceVo) throws IOException, InterruptedException {
 
         String servicePid = tcpService.getPidByService(serviceVo.getServiceName());
+logger.info("添加服务：服务pid==>{}",servicePid);
         ServiceInfo serviceInfo = new ServiceInfo();
 
         serviceInfo.setServiceName(serviceVo.getServiceName());
         serviceInfo.setNetName(serviceVo.getNetName());
 
         // 查服务状态
+        // TODO: 2022/10/17 获取进程状态
         serviceInfo.setServiceState("0");
 
         serviceInfo.setInsertTime(new Date());
-        serviceInfoMapper.insert(serviceInfo);
+       return serviceInfoMapper.insert(serviceInfo);
     }
 
     // 查询服务列表
     public List<ServiceInfo> queryService(){
         return serviceInfoMapper.selectList(null);
+    }
+
+    @Override
+    public ServiceInfo selectOne(String id) {
+        QueryWrapper<ServiceInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        ServiceInfo one = serviceInfoMapper.selectOne(queryWrapper);
+        if (one==null){
+            throw new CustomException("304","未查询到数据");
+        }
+        return one;
     }
 
     @Override
@@ -66,5 +84,10 @@ public class ServiceInfoServImpl implements ServiceInfoService {
         Page<ServiceInfo> page = new Page<>(pageNum, pageSize);
         Page<ServiceInfo> serviceInfoPage = serviceInfoMapper.selectPage(page, wrapper);
         return serviceInfoPage;
+    }
+
+    @Override
+    public int delService(String id) {
+       return serviceInfoMapper.deleteById(id);
     }
 }

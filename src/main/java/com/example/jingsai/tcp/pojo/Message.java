@@ -3,6 +3,7 @@ package com.example.jingsai.tcp.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,6 +17,7 @@ import java.util.Date;
  * @version 1.0
  * @since 2022-10-13 13:48
  */
+@TableName("l_message")
 public class Message {
     /*
      * Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
