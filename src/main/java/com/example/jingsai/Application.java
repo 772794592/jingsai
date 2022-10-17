@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@MapperScan("com.example.jingsai.mapper")
+@MapperScan({"com.example.jingsai.mapper", "com.example.jingsai.*.dao"})
 @EnableTransactionManagement
 @SpringBootApplication
 //@MapperScan(basePackages= "mybatis/config.xml")
