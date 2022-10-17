@@ -1,7 +1,5 @@
 package com.example.jingsai.initialize.runner;
 
-import com.example.jingsai.initialize.task.ProcessInfoRollBackTask;
-import com.example.jingsai.initialize.task.ProcessInfoTask;
 import com.example.jingsai.initialize.task.ProcessNetRollBackTask;
 import com.example.jingsai.initialize.task.ProcessNetTask;
 import com.example.jingsai.threadpool.ThreadPoolService;
@@ -19,13 +17,7 @@ public class SystemRunner implements CommandLineRunner {
     private ThreadPoolService threadPoolService;
 
     @Autowired
-    private ProcessInfoTask processInfoTask;
-
-    @Autowired
     private ProcessNetTask processNetTask;
-
-    @Autowired
-    private ProcessInfoRollBackTask processInfoRollBackTask;
 
     @Autowired
     private ProcessNetRollBackTask processNetRollBackTask;
@@ -33,9 +25,7 @@ public class SystemRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         ScheduledExecutorService scheduledExecutorService = threadPoolService.getScheduledService();
-//        scheduledExecutorService.scheduleWithFixedDelay(processInfoTask, 10, 2, TimeUnit.SECONDS);
         scheduledExecutorService.scheduleWithFixedDelay(processNetTask, 10, 2, TimeUnit.SECONDS);
-//        scheduledExecutorService.scheduleWithFixedDelay(processInfoRollBackTask, 10, 10, TimeUnit.SECONDS);
         scheduledExecutorService.scheduleWithFixedDelay(processNetRollBackTask, 10, 10, TimeUnit.SECONDS);
     }
 
