@@ -38,6 +38,10 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
     @Override
     public BaseResponse addService(ServiceInfo serviceInfo) {
         try {
+            ServiceInfo serviceName = serviceInfoDao.queryByName(serviceInfo.getService_name());
+            if(serviceName == null){
+                return BaseResponse.createByError(CodeEnum.ADD_SERVICE_NAME_EXIST);
+            }
             String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getService_name()};
             CommandUtil.ExecReturn exec = CommandUtil.exec(command);
             if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
@@ -54,8 +58,6 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
         } catch (Exception e) {
             e.printStackTrace();
             log.info("add service error {}", e.getMessage());
-            //回滚
-            //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
         return BaseResponse.createByError(CodeEnum.ADD_SERVICE_ERROR);
     }
@@ -85,7 +87,7 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
             for (ServiceInfo serviceInfo : serviceInfos) {
                 String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getService_name()};
                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
-                if (exec.exitCode == 0) {
+                if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
                     if (exec.equals("failed")) {
                         serviceInfo.setService_status(1);
                     } else {
