@@ -85,16 +85,16 @@ public class ProcessInfo implements Serializable {
     /**
      * 记录的时间
      */
-    private Date recordTime;
+    private long recordTime;
 
-    private String service_name;
+    private String serviceName;
 
-    public String getService_name() {
-        return service_name;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setService_name(String service_name) {
-        this.service_name = service_name;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
     public Integer getId() {
@@ -192,11 +192,11 @@ public class ProcessInfo implements Serializable {
     }
 
 
-    public Date getRecordTime() {
+    public long getRecordTime() {
         return recordTime;
     }
 
-    public void setRecordTime(Date recordTime) {
+    public void setRecordTime(long recordTime) {
         this.recordTime = recordTime;
     }
 
@@ -217,7 +217,7 @@ public class ProcessInfo implements Serializable {
                 ", time='" + time + '\'' +
                 ", command='" + command + '\'' +
                 ", recordTime=" + recordTime +
-                ", service_name='" + service_name + '\'' +
+                ", serviceName='" + serviceName + '\'' +
                 '}';
     }
 }

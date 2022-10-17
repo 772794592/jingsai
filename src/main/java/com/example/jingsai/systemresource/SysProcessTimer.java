@@ -44,15 +44,15 @@ public class SysProcessTimer implements CommandLineRunner {
                             return;
                         }
                         for (ServiceInfo serviceInfo : serviceInfos) {
-                            if (serviceInfo.getService_status() == 0) {
-                                CommandUtil.ExecReturn severPid = CommandUtil.exec(new String[]{"pgrep", "-f", serviceInfo.getService_name()});
+                            if (serviceInfo.getServiceStatus() == 0) {
+                                CommandUtil.ExecReturn severPid = CommandUtil.exec(new String[]{"pgrep", "-f", serviceInfo.getServiceName()});
                                 if(severPid.exitCode != 0 || "".equals(severPid.stdout)){
                                     log.info("Error get PID is not null");
                                 }
                                 String[] command = new String[]{"/opt/jdwa/etc/jingsai/sysporicess.sh","get_process",severPid.stdout};
                                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
                                 if(exec.exitCode ==0 && !"".equals(exec.stdout)){
-                                    ProcessInfo proessMessage = EntityUtils.getProessMessage(exec.stdout,serviceInfo.getService_name());
+                                    ProcessInfo proessMessage = EntityUtils.getProessMessage(exec.stdout,serviceInfo.getServiceName());
                                     processInfoDao.addProcess(proessMessage);
                                 }else{
                                     log.info("process is stop or error");

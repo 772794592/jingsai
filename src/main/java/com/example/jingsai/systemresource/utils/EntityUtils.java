@@ -28,10 +28,8 @@ public class EntityUtils {
         processInfo.setMem(Double.parseDouble(messages[9].trim()));
         processInfo.setTime(messages[10].trim());
         processInfo.setCommand(messages[11].trim());
-        processInfo.setRecordTime(new Date());
-        processInfo.setService_name(serviceName);
+        processInfo.setRecordTime(System.currentTimeMillis());
+        processInfo.setServiceName(serviceName);
         return processInfo;
     }
-
-
 }

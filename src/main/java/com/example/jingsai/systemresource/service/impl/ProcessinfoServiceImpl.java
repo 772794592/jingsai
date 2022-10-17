@@ -5,8 +5,6 @@ import com.example.jingsai.systemresource.dao.ProcessInfoDao;
 import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.service.ProcessInfoService;
 import com.example.jingsai.systemresource.utils.BaseResponse;
-import com.example.jingsai.systemresource.utils.CommandUtil;
-import com.example.jingsai.systemresource.utils.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

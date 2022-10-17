@@ -38,19 +38,19 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
     @Override
     public BaseResponse addService(ServiceInfo serviceInfo) {
         try {
-            ServiceInfo serviceName = serviceInfoDao.queryByName(serviceInfo.getService_name());
+            ServiceInfo serviceName = serviceInfoDao.queryByName(serviceInfo.getServiceName());
             if(serviceName == null){
                 return BaseResponse.createByError(CodeEnum.ADD_SERVICE_NAME_EXIST);
             }
-            String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getService_name()};
+            String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getServiceName()};
             CommandUtil.ExecReturn exec = CommandUtil.exec(command);
             if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
                 if (exec.equals("failed")) {
-                    serviceInfo.setService_status(1);
+                    serviceInfo.setServiceStatus(1);
                 }else{
-                    serviceInfo.setService_status(0);
+                    serviceInfo.setServiceStatus(0);
                 }
-                serviceInfo.setRecord_time(new Date().getTime());
+                serviceInfo.setRecordTime(System.currentTimeMillis());
                 serviceInfoDao.addService(serviceInfo);
                 return BaseResponse.createBySuccess();
             }
@@ -85,15 +85,15 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
         try {
             List<ServiceInfo> serviceInfos = serviceInfoDao.query();
             for (ServiceInfo serviceInfo : serviceInfos) {
-                String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getService_name()};
+                String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getServiceName()};
                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
                 if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
                     if (exec.equals("failed")) {
-                        serviceInfo.setService_status(1);
+                        serviceInfo.setServiceStatus(1);
                     } else {
-                        serviceInfo.setService_status(0);
+                        serviceInfo.setServiceStatus(0);
                     }
-                    serviceInfoDao.updateStatus(serviceInfo.getService_status(), serviceInfo.getId());
+                    serviceInfoDao.updateStatus(serviceInfo.getServiceStatus(), serviceInfo.getId());
                 }
             }
         } catch (Exception e) {

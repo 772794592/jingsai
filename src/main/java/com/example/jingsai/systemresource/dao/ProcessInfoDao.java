@@ -28,7 +28,7 @@ public interface ProcessInfoDao {
      * @return
      */
     @Insert("INSERT INTO process_info (pid,service_name,user,pr,ni,virt,res,shr,s,cpu,mem,time,command,record_time) VALUES " +
-            "(#{pid},#{service_name},#{user},#{pr},#{ni},#{virt},#{res},#{shr},#{s},#{cpu},#{mem},#{time},#{command},#{recordTime})")
+            "(#{pid},#{serviceName},#{user},#{pr},#{ni},#{virt},#{res},#{shr},#{s},#{cpu},#{mem},#{time},#{command},#{recordTime})")
     int addProcess(ProcessInfo processInfo);
 
     /***

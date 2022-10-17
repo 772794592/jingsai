@@ -20,17 +20,17 @@ public class ServiceInfo implements Serializable {
     /**
      * 服务名称
      */
-    private String service_name;
+    private String serviceName;
 
     /**
      * 服务状态
      */
-    private Integer service_status;
+    private Integer serviceStatus;
 
     /**
      *记录时间
      */
-    private long record_time;
+    private long recordTime;
 
 
     public Integer getId() {
@@ -41,37 +41,37 @@ public class ServiceInfo implements Serializable {
         this.id = id;
     }
 
-    public String getService_name() {
-        return service_name;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setService_name(String service_name) {
-        this.service_name = service_name;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
-    public Integer getService_status() {
-        return service_status;
+    public Integer getServiceStatus() {
+        return serviceStatus;
     }
 
-    public void setService_status(Integer service_status) {
-        this.service_status = service_status;
+    public void setServiceStatus(Integer serviceStatus) {
+        this.serviceStatus = serviceStatus;
     }
 
-    public long getRecord_time() {
-        return record_time;
+    public long getRecordTime() {
+        return recordTime;
     }
 
-    public void setRecord_time(long record_time) {
-        this.record_time = record_time;
+    public void setRecordTime(long recordTime) {
+        this.recordTime = recordTime;
     }
 
     @Override
     public String toString() {
         return "ServiceInfo{" +
                 "id=" + id +
-                ", service_name='" + service_name + '\'' +
-                ", service_status=" + service_status +
-                ", record_time=" + record_time +
+                ", serviceName='" + serviceName + '\'' +
+                ", serviceStatus=" + serviceStatus +
+                ", recordTime=" + recordTime +
                 '}';
     }
 }
