@@ -38,4 +38,7 @@ public interface ServiceInfoDao {
 
     @Update("update service_process set service_status = #{serviceStatus} where id =#{id}")
     int updateStatus(@Param("serviceStatus") int serviceStatus,@Param("id") int id);
+
+    @Select("SELECT * FROM service_process WHERE service_name = #{serviceName}")
+    ServiceInfo queryByName(String serviceName);
 }
