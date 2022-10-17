@@ -18,7 +18,7 @@ CREATE  TABLE  `service_process` (
     `id` INT AUTO_INCREMENT COMMENT 'ID',
     `service_name` varchar(64) COMMENT '服务名称',
     `service_status` INT COMMENT '服务状态',
-    `record_time` I COMMENT '记录时间',
+    `record_time` bigint COMMENT '记录时间',
      PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
 
@@ -37,6 +37,6 @@ CREATE TABLE `process_info` (
     `mem` DOUBLE COMMENT '进程使用的物理内存百分比',
     `time` VARCHAR(64) COMMENT '进程使用的CPU时间总计,单位1/100秒',
     `command` VARCHAR(64) COMMENT '命令名/命令行',
-    `record_time` integer COMMENT '记录的时间',
+    `record_time` bigint COMMENT '记录的时间',
     PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
