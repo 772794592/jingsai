@@ -7,7 +7,10 @@ public enum CodeEnum {
     DEL_SERVICE_ERROR(0x00101004,"删除失败！"),
     ADD_SERVICE_ERROR(0x00101004,"添加失败！"),
     ADD_SERVICE_ISNULL(0x00101004,"未找到该服务！"),
-    ADD_SERVICE_NAME_EXIST(0x00101005,"服务名已存在！");
+    ADD_SERVICE_NAME_EXIST(0x00101005,"服务名已存在！"),
+
+    SHELL_EXEC_FAIL(0x00201001, "shell执行异常");
+
     private int code;
     private String desc;
 
