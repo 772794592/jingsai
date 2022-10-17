@@ -43,7 +43,7 @@ public class ProcessNet implements Serializable {
     private String foreignAddress;
 
     /**
-     * 连接地址
+     * 连接状态
      */
     private String state;
 

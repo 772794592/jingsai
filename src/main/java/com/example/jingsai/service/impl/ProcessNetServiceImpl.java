@@ -71,51 +71,27 @@ public class ProcessNetServiceImpl implements ProcessNetService {
 
     @Override
     public Map<String, Object> statistics(int pid, long beginTm, long endTm) {
-        QueryWrapper<ProcessNet> queryWrapper = new QueryWrapper<>();
         QueryWrapper<ProcessNet> tcpQuery = new QueryWrapper<>();
-        QueryWrapper<ProcessNet> udpQuery = new QueryWrapper<>();
-        QueryWrapper<ProcessNet> establishedQuery = new QueryWrapper<>();
-        QueryWrapper<ProcessNet> timeWaitQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> tcpEstablishedQuery = new QueryWrapper<>();
 
         if (pid != -1) {
-            queryWrapper.eq("pid", pid);
             tcpQuery.eq("pid", pid);
-            udpQuery.eq("pid", pid);
-            establishedQuery.eq("pid", pid);
-            timeWaitQuery.eq("pid", pid);
             tcpEstablishedQuery.eq("pid", pid);
         }
         if (beginTm != -1) {
-            queryWrapper.gt("create_time", TimeUtil.format(beginTm));
             tcpQuery.gt("create_time", TimeUtil.format(beginTm));
-            udpQuery.gt("create_time", TimeUtil.format(beginTm));
-            establishedQuery.gt("create_time", TimeUtil.format(beginTm));
-            timeWaitQuery.gt("create_time", TimeUtil.format(beginTm));
             tcpEstablishedQuery.gt("create_time", TimeUtil.format(beginTm));
         }
         if (endTm != -1) {
-            queryWrapper.lt("create_time", TimeUtil.format(endTm));
             tcpQuery.lt("create_time", TimeUtil.format(endTm));
-            udpQuery.lt("create_time", TimeUtil.format(endTm));
-            establishedQuery.lt("create_time", TimeUtil.format(endTm));
-            timeWaitQuery.lt("create_time", TimeUtil.format(endTm));
             tcpEstablishedQuery.lt("create_time", TimeUtil.format(endTm));
         }
 
         long tcp = processNetMapper.selectCount(tcpQuery.like("proto", "tcp%"));
-        long udp = processNetMapper.selectCount(udpQuery.like("proto", "udp%"));
-        long total = processNetMapper.selectCount(queryWrapper);
-        long established = processNetMapper.selectCount(establishedQuery.eq("state", "ESTABLISHED"));
-        long timeWait = processNetMapper.selectCount(timeWaitQuery.eq("state", "TIME_WAIT"));
         long tcpEstablished = processNetMapper.selectCount(tcpEstablishedQuery.like("proto", "tcp%").eq("state", "ESTABLISHED"));
 
         Map<String, Object> netstat = new HashMap<>();
         netstat.put("tcp", tcp);
-        netstat.put("udp", udp);
-        netstat.put("total", total);
-        netstat.put("established", established);
-        netstat.put("timeWait", timeWait);
         netstat.put("tcpEstablished", tcpEstablished);
 
         return netstat;
