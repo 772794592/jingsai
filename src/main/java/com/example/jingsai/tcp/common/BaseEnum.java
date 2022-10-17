@@ -5,10 +5,6 @@ import org.springframework.lang.Nullable;
 import java.util.Objects;
 
 public enum BaseEnum {
-    /**
-     * 每一个枚举变量都是枚举类 CommonEnum的实例化
-     * CommonEnum.SUCCESS获得的对象相当于new CommonEnum("200", "成功!");获得的对象
-     */
 
 // 数据操作错误定义
     SUCCESS("200", "成功!"),
@@ -23,8 +19,6 @@ public enum BaseEnum {
 
     SERVER_BUSY("503", "服务器正忙，请稍后再试!"),
 
-    SIGNATURE_NOT_MATCH("401", "请求的数字签名不匹配!"),
-
     PID_ISNULL("402", "进程PID为空"),
 
     NOT_RUNNING("-1", "运行时异常"),
@@ -34,7 +28,6 @@ public enum BaseEnum {
     private static final BaseEnum[] VALUES;
 
     static {
-        // 枚举类里有两个默认的静态方法：values() ,valuesOf()
         VALUES = values();
     }
 
