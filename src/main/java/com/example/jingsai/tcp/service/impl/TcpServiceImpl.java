@@ -49,8 +49,8 @@ public class TcpServiceImpl implements TcpService {
             throw new CustomException("303", "未找到该服务");
         }
         // 按空格截取字符串
-        /*String[] pid = result.stdout.split(" ");*/
-        return result.stdout;
+        String replace = result.stdout.replace("\n", "");
+        return replace;
     }
 
     @Override

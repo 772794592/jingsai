@@ -22,11 +22,11 @@ public interface TcpMapper extends BaseMapper<Message> {
     /**
      * 通过pid查询所有tcp消息
      */
-    @Select("select * from message where pid = #{pid}")
+    @Select("select * from l_message where pid = #{pid}")
     List<Message> queryAll(String pid);
 
     // 插入
-    @Insert("insert into message values(#{id},#{type}, #{localAddress}, #{foreignAddress}, " +
+    @Insert("insert into l_message values(#{id},#{type}, #{localAddress}, #{foreignAddress}, " +
             "#{state}, #{pid}, #{program}, #{name}, #{insertTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
 //    void insertMessage(String id, Message.ProtoType type,String localAddress,String foreignAddress,String state,String pid,String program);
