@@ -49,7 +49,7 @@ public class SysProcessTimer implements CommandLineRunner {
                                 if(severPid.exitCode != 0 || "".equals(severPid.stdout)){
                                     log.info("Error get PID is not null");
                                 }
-                                String[] command = new String[]{"/opt/jdwa/sync/etc/sysporicess.sh","get_process",severPid.stdout};
+                                String[] command = new String[]{"/opt/jdwa/etc/jingsai/sysporicess.sh","get_process",severPid.stdout};
                                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
                                 if(exec.exitCode ==0 && !"".equals(exec.stdout)){
                                     ProcessInfo proessMessage = EntityUtils.getProessMessage(exec.stdout,serviceInfo.getService_name());

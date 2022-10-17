@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class EntityUtils {
 
-    public static final String  CMDPARAM ="/opt/jdwa/sync/etc/sysporicess.sh";
+    public static final String  CMDPARAM ="/opt/jdwa/etc/jingsai/sysporicess.sh";
     public static ProcessInfo getProessMessage(String msg,String serviceName){
         ProcessInfo processInfo = new ProcessInfo();
         String[] messages = msg.split(" ");
@@ -28,7 +28,7 @@ public class EntityUtils {
         processInfo.setMem(Double.parseDouble(messages[9].trim()));
         processInfo.setTime(messages[10].trim());
         processInfo.setCommand(messages[11].trim());
-        processInfo.setRecordTime(new Date().getTime());
+        processInfo.setRecordTime(new Date());
         processInfo.setService_name(serviceName);
         return processInfo;
     }

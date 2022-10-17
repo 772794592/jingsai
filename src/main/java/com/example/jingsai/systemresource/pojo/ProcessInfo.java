@@ -3,7 +3,6 @@ package com.example.jingsai.systemresource.pojo;
 
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -86,7 +85,7 @@ public class ProcessInfo implements Serializable {
     /**
      * 记录的时间
      */
-    private long recordTime;
+    private Date recordTime;
 
     private String service_name;
 
@@ -192,11 +191,12 @@ public class ProcessInfo implements Serializable {
         this.command = command;
     }
 
-    public long getRecordTime() {
+
+    public Date getRecordTime() {
         return recordTime;
     }
 
-    public void setRecordTime(long recordTime) {
+    public void setRecordTime(Date recordTime) {
         this.recordTime = recordTime;
     }
 
