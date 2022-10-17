@@ -8,7 +8,7 @@ CREATE TABLE `process_info` (
     `id` INT AUTO_INCREMENT COMMENT 'ID',
     `pid`INT COMMENT '进程ID',
     `user` VARCHAR(64) COMMENT '进程所有者用户',
-    `pr` INT COMMENT '进程优先级，值越小优先级越高',
+    `pr` VARCHAR(64) COMMENT '进程优先级，值越小优先级越高',
     `ni` INT COMMENT '负值表示高优先级，正值表示低优先级',
     `virt` INT COMMENT '进程使用的虚拟内存总量，单位kb',
     `res` INT COMMENT '进程使用的，未被换出的物理内存大小，单位kb',

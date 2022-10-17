@@ -35,7 +35,7 @@ public class ProcessInfo implements Serializable {
     /**
      * 进程优先级，值越小优先级越高
      */
-    private Integer pr;
+    private String pr;
 
     /**
      * 负值表示高优先级，正值表示低优先级
@@ -108,11 +108,11 @@ public class ProcessInfo implements Serializable {
     public void setUser(String user) {
         this.user = user;
     }
-    public Integer getPr() {
+    public String getPr() {
         return pr;
     }
 
-    public void setPr(Integer pr) {
+    public void setPr(String pr) {
         this.pr = pr;
     }
     public Integer getNi() {

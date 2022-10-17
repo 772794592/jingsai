@@ -8,6 +8,8 @@ import com.example.jingsai.mapper.ProcessInfoMapper;
 import com.example.jingsai.model.ProcessInfo;
 import com.example.jingsai.service.ProcessInfoService;
 import com.example.jingsai.utils.TimeUtil;
+import com.example.jingsai.utils.Util;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -81,17 +83,17 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
 
     private List<ProcessInfo> handle(String stdout) {
 
-        List<ProcessInfo> list = Stream.of(stdout)
+        List<ProcessInfo> list = Stream.of(stdout.trim())
                 .flatMap(out -> Stream.of(out.split("\\n")))
                 .map(line -> {
                     String[] data = line.trim().split(" +");
                     ProcessInfo processInfo = new ProcessInfo();
                     processInfo.setPid(Integer.parseInt(data[0]));
                     processInfo.setUser(data[1]);
-                    processInfo.setPr(Integer.parseInt(data[2]));
+                    processInfo.setPr(data[2]);
                     processInfo.setNi(Integer.parseInt(data[3]));
-                    processInfo.setVirt(Integer.parseInt(data[4]));
-                    processInfo.setRes(Integer.parseInt(data[5]));
+                    processInfo.setVirt(Util.toKb(data[4]));
+                    processInfo.setRes(Util.toKb(data[5]));
                     processInfo.setShr(Integer.parseInt(data[6]));
                     processInfo.setS(data[7]);
                     processInfo.setCpu(Double.parseDouble(data[8]));

@@ -72,28 +72,36 @@ public class ProcessNetServiceImpl implements ProcessNetService {
     @Override
     public Map<String, Object> statistics(int pid, long beginTm, long endTm) {
         QueryWrapper<ProcessNet> queryWrapper = new QueryWrapper<>();
-
-        if (pid != -1) {
-            queryWrapper.eq("pid", pid);
-        }
-        if (beginTm != -1) {
-            queryWrapper.gt("create_time", TimeUtil.format(beginTm));
-        }
-        if (endTm != -1) {
-            queryWrapper.lt("create_time", TimeUtil.format(endTm));
-        }
-
         QueryWrapper<ProcessNet> tcpQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> udpQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> establishedQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> timeWaitQuery = new QueryWrapper<>();
         QueryWrapper<ProcessNet> tcpEstablishedQuery = new QueryWrapper<>();
 
-        BeanUtils.copyProperties(queryWrapper, tcpQuery);
-        BeanUtils.copyProperties(queryWrapper, udpQuery);
-        BeanUtils.copyProperties(queryWrapper, establishedQuery);
-        BeanUtils.copyProperties(queryWrapper, timeWaitQuery);
-        BeanUtils.copyProperties(queryWrapper, tcpEstablishedQuery);
+        if (pid != -1) {
+            queryWrapper.eq("pid", pid);
+            tcpQuery.eq("pid", pid);
+            udpQuery.eq("pid", pid);
+            establishedQuery.eq("pid", pid);
+            timeWaitQuery.eq("pid", pid);
+            tcpEstablishedQuery.eq("pid", pid);
+        }
+        if (beginTm != -1) {
+            queryWrapper.gt("create_time", TimeUtil.format(beginTm));
+            tcpQuery.gt("create_time", TimeUtil.format(beginTm));
+            udpQuery.gt("create_time", TimeUtil.format(beginTm));
+            establishedQuery.gt("create_time", TimeUtil.format(beginTm));
+            timeWaitQuery.gt("create_time", TimeUtil.format(beginTm));
+            tcpEstablishedQuery.gt("create_time", TimeUtil.format(beginTm));
+        }
+        if (endTm != -1) {
+            queryWrapper.lt("create_time", TimeUtil.format(endTm));
+            tcpQuery.lt("create_time", TimeUtil.format(endTm));
+            udpQuery.lt("create_time", TimeUtil.format(endTm));
+            establishedQuery.lt("create_time", TimeUtil.format(endTm));
+            timeWaitQuery.lt("create_time", TimeUtil.format(endTm));
+            tcpEstablishedQuery.lt("create_time", TimeUtil.format(endTm));
+        }
 
         long tcp = processNetMapper.selectCount(tcpQuery.like("proto", "tcp%"));
         long udp = processNetMapper.selectCount(udpQuery.like("proto", "udp%"));
@@ -124,7 +132,7 @@ public class ProcessNetServiceImpl implements ProcessNetService {
 
     private List<ProcessNet> handle(String stdout) {
 
-        List<ProcessNet> list = Stream.of(stdout)
+        List<ProcessNet> list = Stream.of(stdout.trim())
                 .flatMap(out -> Stream.of(out.split("\\n")))
                 .map(line -> {
                     String[] data = line.trim().split(" +");

@@ -24,12 +24,17 @@
     <sql id="Base_Column_List">
         id, pid, user, pr, ni, virt, res, shr, s, cpu, mem, time, command, create_time
     </sql>
+
+    <sql id="Base_Column_List_No_Id">
+        pid, user, pr, ni, virt, res, shr, s, cpu, mem, time, command, create_time
+    </sql>
     
     <insert id="saveBatch" >
         INSERT INTO process_info
-        (<include refid="Base_Column_List"/>)
+        (<include refid="Base_Column_List_No_Id"/>)
         VALUES
-        <foreach collection="list" item="processInfo" separator="," open="(" close=")">
+        <foreach collection="list" item="processInfo" separator=",">
+            (
             #{processInfo.pid},
             #{processInfo.user},
             #{processInfo.pr},
@@ -43,13 +48,14 @@
             #{processInfo.time},
             #{processInfo.command},
             #{processInfo.createTime}
+            )
         </foreach>
     </insert>
 
     <select id="selectByMaxId" resultType="com.example.jingsai.model.ProcessInfo">
         SELECT <include refid="Base_Column_List"/>
         FROM process_info
-        WHERE pid = #{pid} AND id IN (SELECT max(id) FROM process_info);
+        WHERE pid = #{pid} AND id IN (SELECT max(id) FROM process_info WHERE pid = #{pid});
     </select>
 
     <delete id="rollback">
