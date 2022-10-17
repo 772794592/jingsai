@@ -24,7 +24,7 @@ public class ProcessInfoController {
     /***
      * 根据条件查询出历史进程信息
      */
-    @GetMapping("queryBytime")
+    @PostMapping("queryBytime")
     public BaseResponse query(@RequestBody String data)  {
         JSONObject jsonObject = JSONObject.parseObject(data);
         Integer pageSize = jsonObject.getInteger("pageSize");
