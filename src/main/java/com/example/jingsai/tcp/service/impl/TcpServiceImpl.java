@@ -1,10 +1,12 @@
 package com.example.jingsai.tcp.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.example.jingsai.tcp.common.BaseEnum;
 import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.Message;
+import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.utils.ExecResult;
 import org.slf4j.Logger;
@@ -66,7 +68,7 @@ public class TcpServiceImpl implements TcpService {
     }
 
     @Override
-    public List<Message> tcpList(String pid) throws IOException, InterruptedException {
+    public List<Message> tcpList(String pid, boolean insertDb) throws IOException, InterruptedException {
         if (!StringUtils.hasLength(pid)) {
             throw new CustomException(BaseEnum.PID_ISNULL.getResultCode(), BaseEnum.PID_ISNULL.getResultMsg());
         }
@@ -94,16 +96,22 @@ public class TcpServiceImpl implements TcpService {
 //        System.out.println(messages);
 
         ArrayList<Message> messageList = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            Message vo = this.convertLine(line);
 
+        while ((line = br.readLine()) != null) {
+
+            Message vo = this.convertLine(line);
             System.out.println("===================" + vo.getInsertTime());
-            // 入库
-            tcpMapper.insertMessage(vo);
-//            tcpMapper.insert(vo);
-            System.out.println("--------------------"+vo.getId());
             vo.setPid(pid);
-//            vo.setId(vo.getId());
+
+            // 入库
+            if (insertDb) {
+                vo.setInsertTime(new Date());
+                tcpMapper.insertMessage(vo);
+            }
+//            tcpMapper.insert(vo);
+
+            System.out.println("--------------------" + vo.getId());
+
 
             messageList.add(vo);
             logger.info("构造的对象：{}", vo);
@@ -123,7 +131,7 @@ public class TcpServiceImpl implements TcpService {
 //            stringBuilder.append('\n');
 //        }
 
-        Message message = new Message();
+//        Message message = new Message();
 //        Message ms = Message.builder().pid("").build();
 //        message.setType(Message.ProtoType.tcp);
 //        message.setLocalAddress("0.0.0.0:22");
@@ -136,16 +144,24 @@ public class TcpServiceImpl implements TcpService {
 
 
         // 对象转json
-        String s = JSONObject.toJSONString(message);
-        System.out.println("Json:" + s);
+//        String s = JSONObject.toJSONString(message);
+//        System.out.println("Json:" + s);
         return messageList;
+    }
+
+    public int insertMessage(Message message) {
+        if (message == null) {
+            throw new CustomException();
+        }
+        message.setInsertTime(new Date());
+        return tcpMapper.insertMessage(message);
     }
 
     @Override
     public List<String> tcpPort(String pid) throws IOException, InterruptedException {
         ArrayList<String> ports = new ArrayList<>();
 
-        List<Message> tcpList = this.tcpList(pid);
+        List<Message> tcpList = this.tcpList(pid, false);
         for (Message message : tcpList) {
             String localAddress = message.getLocalAddress();
             // 判断协议不是unix，截取端口号
@@ -158,7 +174,6 @@ public class TcpServiceImpl implements TcpService {
         }
         return ports;
     }
-
 
 
     @Override

@@ -1,9 +1,8 @@
 package com.example.jingsai.tcp.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
-import com.example.jingsai.tcp.vo.ServiceVo;
+import com.example.jingsai.tcp.vo.ServiceDTO;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +19,9 @@ public interface ServiceInfoService {
     /**
      * 添加服务
      */
-    int addService(ServiceVo serviceVo) throws IOException, InterruptedException;
+    int addService(ServiceDTO serviceDTO) throws IOException, InterruptedException;
+
+    String serviceState(String s) throws IOException, InterruptedException;
 
     /**
      * 删除服务

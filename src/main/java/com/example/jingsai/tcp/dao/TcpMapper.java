@@ -30,6 +30,6 @@ public interface TcpMapper extends BaseMapper<Message> {
             "#{state}, #{pid}, #{program}, #{name}, #{insertTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
 //    void insertMessage(String id, Message.ProtoType type,String localAddress,String foreignAddress,String state,String pid,String program);
-    void insertMessage(Message message);
+    int insertMessage(Message message);
 
 }

@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.example.jingsai.tcp.common.Result;
+import com.example.jingsai.systemresource.utils.CommandUtil;
+import com.example.jingsai.systemresource.utils.EntityUtils;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
-import com.example.jingsai.tcp.vo.ServiceVo;
+import com.example.jingsai.tcp.vo.ServiceDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
  * 服务列表信息
  * <p>
  *
@@ -42,35 +41,50 @@ public class ServiceInfoServImpl implements ServiceInfoService {
     @Resource
     private TcpService tcpService;
 
-    public int addService(ServiceVo serviceVo) throws IOException, InterruptedException {
+    public int addService(ServiceDTO serviceDTO) throws IOException, InterruptedException {
 
-        String servicePid = tcpService.getPidByService(serviceVo.getServiceName());
-logger.info("添加服务：服务pid==>{}",servicePid);
+        String servicePid = tcpService.getPidByService(serviceDTO.getServiceName());
+        logger.info("添加服务：服务pid==>{}", servicePid);
         ServiceInfo serviceInfo = new ServiceInfo();
 
-        serviceInfo.setServiceName(serviceVo.getServiceName());
-        serviceInfo.setNetName(serviceVo.getNetName());
+        serviceInfo.setServiceName(serviceDTO.getServiceName());
+        serviceInfo.setNetName(serviceDTO.getNetName());
 
         // 查服务状态
-        // TODO: 2022/10/17 获取进程状态
-        serviceInfo.setServiceState("0");
+        // TODO: 2022/10/17 获取服务状态
+        serviceInfo.setServiceState(this.serviceState(serviceDTO.getServiceName()));
+
 
         serviceInfo.setInsertTime(new Date());
-       return serviceInfoMapper.insert(serviceInfo);
+        return serviceInfoMapper.insert(serviceInfo);
     }
 
+    public String serviceState(String serviceName) throws IOException, InterruptedException {
+        String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceName};
+        CommandUtil.ExecReturn exec = CommandUtil.exec(command);
+        logger.info("exec===>{}",exec.stdout);
+        if (exec.exitCode != 0 && "".equals(exec.stdout)) {
+            return "1";
+        }
+        if (!exec.stdout.trim().equals("failed")) {
+            return "0";
+        }
+        return "1";
+    }
+
+
     // 查询服务列表
-    public List<ServiceInfo> queryService(){
+    public List<ServiceInfo> queryService() {
         return serviceInfoMapper.selectList(null);
     }
 
     @Override
     public ServiceInfo selectOne(String id) {
         QueryWrapper<ServiceInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",id);
+        queryWrapper.eq("id", id);
         ServiceInfo one = serviceInfoMapper.selectOne(queryWrapper);
-        if (one==null){
-            throw new CustomException("304","未查询到数据");
+        if (one == null) {
+            throw new CustomException("304", "未查询到数据");
         }
         return one;
     }
@@ -88,6 +102,6 @@ logger.info("添加服务：服务pid==>{}",servicePid);
 
     @Override
     public int delService(String id) {
-       return serviceInfoMapper.deleteById(id);
+        return serviceInfoMapper.deleteById(id);
     }
 }

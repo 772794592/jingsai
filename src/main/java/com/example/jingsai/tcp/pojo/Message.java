@@ -167,6 +167,10 @@ public class Message {
         this.id = id;
     }
 
+    public void setInsertTime(Date insertTime) {
+        this.insertTime = insertTime;
+    }
+
     @Override
     public String toString() {
         return "Message{" +

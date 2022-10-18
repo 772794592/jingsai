@@ -14,53 +14,29 @@ import java.util.List;
  * @version 1.0
  * @since 2022/10/16 11:23
  */
-//@TableName("l_test_vo")
 public class ServiceInfoVo {
 
-    String id;
-    String serviceName;
-    String servicePid;
-    String serviceState;
-    String netName;
-    String tcpCount;
-    List<Message> tcpState;
-    List<String> tcpPort;
+//    String id;
+//    String serviceName;
+//    String netName;
+
+    private String tcpCount;
+    private List<Message> tcpState;
+    private List<String> tcpPort;
+    /***
+     *网卡流速
+     */
+//    private long nicSpeed;
+
+    /***
+     *网卡流量
+     */
+//    private long nicTraffic;
+
     Date insertTime;
 
 
     public ServiceInfoVo() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getServicePid() {
-        return servicePid;
-    }
-
-    public void setServicePid(String servicePid) {
-        this.servicePid = servicePid;
-    }
-
-    public String getServiceState() {
-        return serviceState;
-    }
-
-    public void setServiceState(String serviceState) {
-        this.serviceState = serviceState;
     }
 
     public String getTcpCount() {
@@ -87,19 +63,12 @@ public class ServiceInfoVo {
         this.tcpPort = tcpPort;
     }
 
+
     public Date getInsertTime() {
         return insertTime;
     }
 
     public void setInsertTime(Date insertTime) {
         this.insertTime = insertTime;
-    }
-
-    public String getNetName() {
-        return netName;
-    }
-
-    public void setNetName(String netName) {
-        this.netName = netName;
     }
 }

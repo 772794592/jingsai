@@ -11,10 +11,10 @@ import com.baomidou.mybatisplus.annotation.TableId;
  * @version 1.0
  * @since 2022/10/17 9:58
  */
-public class ServiceVo {
+public class ServiceDTO {
 
-String serviceName;
-String netName;
+    String serviceName;
+    String netName;
 
     public String getServiceName() {
         return serviceName;

@@ -1,11 +1,18 @@
 package com.example.jingsai.tcp.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.jingsai.netcard.pojo.NicInfo;
+import com.example.jingsai.netcard.service.NicInfoService;
+import com.example.jingsai.systemresource.utils.BaseResponse;
 import com.example.jingsai.tcp.common.Result;
+import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.pojo.Message;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
+import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
-import com.example.jingsai.tcp.vo.ServiceVo;
 import com.example.jingsai.tcp.service.TcpService;
+import com.example.jingsai.tcp.vo.ServiceDTO;
 import com.example.jingsai.tcp.vo.ServiceInfoVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +42,13 @@ public class TcpController {
 
     @Resource
     private ServiceInfoService serviceInfoService;
+
+    @Resource
+    private NicInfoService nicInfoService;
+    @Resource
+    private ServiceInfoMapper serviceInfoMapper;
+    @Resource
+    private ServiceLogMapper serviceLogMapper;
 
     /**
      * 通过服务名获取服务pid
@@ -63,7 +78,7 @@ public class TcpController {
      */
     @GetMapping("/getTcpState/{pid}")
     public List<Message> getTcpState(@PathVariable String pid) throws IOException, InterruptedException {
-        List<Message> list = tcpService.tcpList(pid);
+        List<Message> list = tcpService.tcpList(pid, true);
         return list;
     }
 
@@ -93,27 +108,52 @@ public class TcpController {
         ServiceInfo serviceInfo = serviceInfoService.selectOne(id);
 
         String pid = tcpService.getPidByService(serviceInfo.getServiceName());
-        logger.info("serviceInfo: 服务pid==>{}",pid);
+        logger.info("serviceInfo: 服务pid==>{}", pid);
         // 查tcp连接数
         int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
         // 连接状态
-        List<Message> tcpListState = tcpService.tcpList(pid);
+        List<Message> tcpListState = tcpService.tcpList(pid, true);
         //端口
         List<String> ports = tcpService.tcpPort(pid);
 
         //封装vo
         ServiceInfoVo serviceInfoVo = new ServiceInfoVo();
+
         serviceInfoVo.setTcpCount(String.valueOf(tcpEstablishedCount));
         serviceInfoVo.setTcpState(tcpListState);
         serviceInfoVo.setTcpPort(ports);
 
+       /* ArrayList<String> list = new ArrayList<>();
+        list.add(serviceInfo.getNetName());
+        BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
+        if (nicInfoData.getRespData() != null) {
+            List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
+            NicInfo info = nicInfo.get(0);
+//            for (NicInfo info : nicInfo) {
+            long nicTraffic = info.getNicTraffic();
+            long nicSpeed = info.getNicSpeed();
+            //流量
+            serviceInfoVo.setNicTraffic(nicTraffic);
+            //流速
+            serviceInfoVo.setNicSpeed(nicSpeed);
+//            }
+        }*/
+        serviceInfoVo.setInsertTime(new Date());
+
         return Result.success(serviceInfoVo);
     }
 
+    // 查询服务log/分页
+//    @RequestMapping("/other/{id}")
+//    public Result<?> queryLogPage(@PathVariable("id") String id) {
+//
+//        return Result.success(serviceLogMapper.selectOne(new QueryWrapper<ServiceLog>().eq("id",id)));
+//    }
+
     // 添加网络资源
     @RequestMapping("/addService")
-    public Result<?> addNetResource(@RequestBody ServiceVo serviceVo) throws IOException, InterruptedException {
-        int row = serviceInfoService.addService(serviceVo);
+    public Result<?> addNetResource(@RequestBody ServiceDTO serviceDTO) throws IOException, InterruptedException {
+        int row = serviceInfoService.addService(serviceDTO);
         return Result.success();
     }
 
@@ -137,5 +177,6 @@ public class TcpController {
                                          @RequestParam(defaultValue = "") String search) {
         return Result.success(serviceInfoService.findServiceInfoPage(pageNum, pageSize, search));
     }
+
 
 }

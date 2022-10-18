@@ -32,7 +32,7 @@ public interface TcpService {
     /**
      * 根据进程pid获取进程tcp连接状态
      */
-    List<Message> tcpList(String pid) throws IOException, InterruptedException;
+    List<Message> tcpList(String pid,boolean insertDb) throws IOException, InterruptedException;
     /**
      * 根据进程pid获取进程tcp端口
      * @return
