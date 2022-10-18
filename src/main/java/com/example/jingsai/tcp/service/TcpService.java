@@ -37,7 +37,7 @@ public interface TcpService {
      * 根据进程pid获取进程tcp端口
      * @return
      */
-    List<String> tcpPort(String pid) throws IOException, InterruptedException;
+    StringBuilder tcpPort(String pid) throws IOException, InterruptedException;
 
 
     List<Message> queryAll(String pid);

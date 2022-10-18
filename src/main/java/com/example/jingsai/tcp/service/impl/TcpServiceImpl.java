@@ -158,10 +158,11 @@ public class TcpServiceImpl implements TcpService {
     }
 
     @Override
-    public List<String> tcpPort(String pid) throws IOException, InterruptedException {
+    public StringBuilder tcpPort(String pid) throws IOException, InterruptedException {
         ArrayList<String> ports = new ArrayList<>();
 
         List<Message> tcpList = this.tcpList(pid, false);
+        StringBuilder stringBuilder = new StringBuilder();
         for (Message message : tcpList) {
             String localAddress = message.getLocalAddress();
             // 判断协议不是unix，截取端口号
@@ -169,10 +170,11 @@ public class TcpServiceImpl implements TcpService {
 
                 String[] locals = localAddress.split(":");
                 /*TcpLocalAddressPortVo addressPortVo = new TcpLocalAddressPortVo(pid, locals[0], locals[1]);*/
-                ports.add(locals[1]);
+                stringBuilder.append(locals[1]);
+                //ports.add(locals[1]);
             }
         }
-        return ports;
+        return stringBuilder;
     }
 
 

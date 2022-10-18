@@ -37,11 +37,10 @@ public class NicServiceImpl implements NicInfoService {
             List<NicInfo> nicLists = map1.keySet().stream().map(nic -> {
                 NicInfo nicState1 = map1.get(nic);
                 NicInfo nicState2 = map2.get(nic);
-                nicState2.setNicTraffic(nicState2.getNicTraffic() - nicState1.getNicTraffic());
-                nicState2.setNicSpeed(nicState1.getNicTraffic());
+                nicState2.setNicSpeed(nicState2.getNicTraffic() - nicState1.getNicTraffic());
+                nicState2.setNicTraffic(nicState1.getNicTraffic());
                 return nicState2;
             }).collect(Collectors.toList());
-            System.out.println(nicLists);
             return BaseResponse.createBySuccess(nicLists);
         }catch (Exception e){
             e.printStackTrace();

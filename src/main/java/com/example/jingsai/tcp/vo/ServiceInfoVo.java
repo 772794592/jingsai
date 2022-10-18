@@ -22,7 +22,7 @@ public class ServiceInfoVo {
 
     private String tcpCount;
     private List<Message> tcpState;
-    private List<String> tcpPort;
+    private StringBuilder tcpPort;
     /***
      *网卡流速
      */
@@ -55,14 +55,13 @@ public class ServiceInfoVo {
         this.tcpState = tcpState;
     }
 
-    public List<String> getTcpPort() {
+    public StringBuilder getTcpPort() {
         return tcpPort;
     }
 
-    public void setTcpPort(List<String> tcpPort) {
+    public void setTcpPort(StringBuilder tcpPort) {
         this.tcpPort = tcpPort;
     }
-
 
     public Date getInsertTime() {
         return insertTime;

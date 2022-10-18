@@ -1,15 +1,14 @@
 package com.example.jingsai.tcp.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.jingsai.netcard.pojo.NicInfo;
+
 import com.example.jingsai.netcard.service.NicInfoService;
-import com.example.jingsai.systemresource.utils.BaseResponse;
+
 import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
-import com.example.jingsai.tcp.dao.ServiceLogMapper;
+
 import com.example.jingsai.tcp.pojo.Message;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
-import com.example.jingsai.tcp.pojo.ServiceLog;
+
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.vo.ServiceDTO;
@@ -47,8 +46,7 @@ public class TcpController {
     private NicInfoService nicInfoService;
     @Resource
     private ServiceInfoMapper serviceInfoMapper;
-    @Resource
-    private ServiceLogMapper serviceLogMapper;
+
 
     /**
      * 通过服务名获取服务pid
@@ -86,8 +84,8 @@ public class TcpController {
      * 根据进程pid获取进程tcp端口
      */
     @GetMapping("/getTcpPort/{pid}")
-    public List<String> TcpPort(@PathVariable String pid) throws IOException, InterruptedException {
-        List<String> tcpPorts = tcpService.tcpPort(pid);
+    public StringBuilder TcpPort(@PathVariable String pid) throws IOException, InterruptedException {
+        StringBuilder tcpPorts = tcpService.tcpPort(pid);
         return tcpPorts;
     }
 
@@ -108,14 +106,12 @@ public class TcpController {
         ServiceInfo serviceInfo = serviceInfoService.selectOne(id);
 
         String pid = tcpService.getPidByService(serviceInfo.getServiceName());
-        logger.info("serviceInfo: 服务pid==>{}", pid);
         // 查tcp连接数
         int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
         // 连接状态
         List<Message> tcpListState = tcpService.tcpList(pid, true);
         //端口
-        List<String> ports = tcpService.tcpPort(pid);
-
+        StringBuilder ports = tcpService.tcpPort(pid);
         //封装vo
         ServiceInfoVo serviceInfoVo = new ServiceInfoVo();
 
@@ -123,24 +119,10 @@ public class TcpController {
         serviceInfoVo.setTcpState(tcpListState);
         serviceInfoVo.setTcpPort(ports);
 
-       /* ArrayList<String> list = new ArrayList<>();
-        list.add(serviceInfo.getNetName());
-        BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
-        if (nicInfoData.getRespData() != null) {
-            List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
-            NicInfo info = nicInfo.get(0);
-//            for (NicInfo info : nicInfo) {
-            long nicTraffic = info.getNicTraffic();
-            long nicSpeed = info.getNicSpeed();
-            //流量
-            serviceInfoVo.setNicTraffic(nicTraffic);
-            //流速
-            serviceInfoVo.setNicSpeed(nicSpeed);
-//            }
-        }*/
         serviceInfoVo.setInsertTime(new Date());
-
-        return Result.success(serviceInfoVo);
+        ArrayList<Object> objects = new ArrayList<>();
+        objects.add(serviceInfoVo);
+        return Result.success(objects);
     }
 
     // 查询服务log/分页

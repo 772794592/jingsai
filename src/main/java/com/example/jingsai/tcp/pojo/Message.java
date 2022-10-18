@@ -49,6 +49,7 @@ public class Message {
         tcp,
         tcp6,
         udp,
+        udp6,
         unix
 
     }
