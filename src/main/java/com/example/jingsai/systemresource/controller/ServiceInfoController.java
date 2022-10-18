@@ -32,13 +32,11 @@ public class ServiceInfoController {
 
     /***
      * 添加服务
-
      * @param serviceInfo
      * @return
      */
     @PostMapping("add")
     public BaseResponse addService(@RequestBody ServiceInfo serviceInfo){
-        System.out.println(serviceInfo.toString());
         return serviceInfoService.addService(serviceInfo);
     }
 

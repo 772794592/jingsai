@@ -39,7 +39,7 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
     public BaseResponse addService(ServiceInfo serviceInfo) {
         try {
             ServiceInfo serviceName = serviceInfoDao.queryByName(serviceInfo.getServiceName());
-            if(serviceName == null){
+            if(serviceName != null){
                 return BaseResponse.createByError(CodeEnum.ADD_SERVICE_NAME_EXIST);
             }
             String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getServiceName()};
@@ -88,7 +88,7 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
                 String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getServiceName()};
                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
                 if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
-                    if (exec.equals("failed")) {
+                    if (exec.stdout.trim().equals("failed")) {
                         serviceInfo.setServiceStatus(1);
                     } else {
                         serviceInfo.setServiceStatus(0);
