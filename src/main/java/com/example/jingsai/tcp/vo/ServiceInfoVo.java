@@ -33,7 +33,7 @@ public class ServiceInfoVo {
      */
 //    private long nicTraffic;
 
-    Date insertTime;
+    Long insertTime;
 
 
     public ServiceInfoVo() {
@@ -64,11 +64,11 @@ public class ServiceInfoVo {
     }
 
 
-    public Date getInsertTime() {
+    public Long getInsertTime() {
         return insertTime;
     }
 
-    public void setInsertTime(Date insertTime) {
+    public void setInsertTime(Long insertTime) {
         this.insertTime = insertTime;
     }
 }

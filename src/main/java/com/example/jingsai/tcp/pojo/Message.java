@@ -43,12 +43,13 @@ public class Message {
     // 插入时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date insertTime;
+    private Long insertTime;
 
     public enum ProtoType {
         tcp,
-        tcp6,
         udp,
+        tcp6,
+        udp6,
         unix
 
     }
@@ -112,7 +113,7 @@ public class Message {
             message.name = name;
             return this;
         }
-        public Builder insertTime(Date insert) {
+        public Builder insertTime(Long insert) {
             message.insertTime = insert;
             return this;
         }
@@ -155,7 +156,7 @@ public class Message {
         return name;
     }
 
-    public Date getInsertTime() {
+    public Long getInsertTime() {
         return insertTime;
     }
 
@@ -167,7 +168,7 @@ public class Message {
         this.id = id;
     }
 
-    public void setInsertTime(Date insertTime) {
+    public void setInsertTime(Long insertTime) {
         this.insertTime = insertTime;
     }
 

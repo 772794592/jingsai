@@ -1,17 +1,13 @@
 package com.example.jingsai.tcp.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.jingsai.netcard.pojo.NicInfo;
 import com.example.jingsai.netcard.service.NicInfoService;
-import com.example.jingsai.systemresource.utils.BaseResponse;
 import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
-import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.pojo.Message;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
-import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
+import com.example.jingsai.tcp.service.impl.ServiceInfoServImpl;
 import com.example.jingsai.tcp.vo.ServiceDTO;
 import com.example.jingsai.tcp.vo.ServiceInfoVo;
 import org.slf4j.Logger;
@@ -20,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,8 +42,6 @@ public class TcpController {
     private NicInfoService nicInfoService;
     @Resource
     private ServiceInfoMapper serviceInfoMapper;
-    @Resource
-    private ServiceLogMapper serviceLogMapper;
 
     /**
      * 通过服务名获取服务pid
@@ -94,12 +87,20 @@ public class TcpController {
 
     @RequestMapping("/test")
     public String test() {
+        ServiceInfoServImpl serviceInfoServ = new ServiceInfoServImpl();
+        try {
+            serviceInfoServ.queryNetCar();
+        }  catch (Exception e) {
+            e.printStackTrace();
+        }
         return "test ok";
     }
 
-    @RequestMapping("/queryAll/{pid}")
-    public List<Message> queryAll(@PathVariable String pid) {
-        return tcpService.queryAll(pid);
+    @RequestMapping("/queryAllPage")
+    public Result<?> queryAllPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                      @RequestParam(defaultValue = "") String search) {
+        return Result.success(tcpService.queryAllPage(pageNum, pageSize,search));
     }
 
     @RequestMapping("/serviceInfo/{id}")
@@ -138,7 +139,7 @@ public class TcpController {
             serviceInfoVo.setNicSpeed(nicSpeed);
 //            }
         }*/
-        serviceInfoVo.setInsertTime(new Date());
+        serviceInfoVo.setInsertTime(System.currentTimeMillis());
 
         return Result.success(serviceInfoVo);
     }

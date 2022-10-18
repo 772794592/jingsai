@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.systemresource.utils.CommandUtil;
 import com.example.jingsai.systemresource.utils.EntityUtils;
+import com.example.jingsai.tcp.common.BaseEnum;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
+import com.example.jingsai.tcp.utils.ExecResult;
 import com.example.jingsai.tcp.vo.ServiceDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +52,11 @@ public class ServiceInfoServImpl implements ServiceInfoService {
         ServiceInfo serviceInfo = new ServiceInfo();
 
         serviceInfo.setServiceName(serviceDTO.getServiceName());
+        // 查询有效网卡
+        List<String> cars = queryNetCar();
+        if (!cars.contains(serviceDTO.getNetName())){
+            throw new CustomException(BaseEnum.NET_CARD_NOT_EXIST.getResultCode(),BaseEnum.NET_CARD_NOT_EXIST.getResultMsg());
+        }
         serviceInfo.setNetName(serviceDTO.getNetName());
 
         // 查服务状态
@@ -55,8 +64,18 @@ public class ServiceInfoServImpl implements ServiceInfoService {
         serviceInfo.setServiceState(this.serviceState(serviceDTO.getServiceName()));
 
 
-        serviceInfo.setInsertTime(new Date());
+        serviceInfo.setInsertTime(System.currentTimeMillis());
         return serviceInfoMapper.insert(serviceInfo);
+    }
+
+    public List<String> queryNetCar() throws IOException, InterruptedException {
+        String[] cmd = {"sh", "-c","ns cat /proc/net/dev|grep -v face|grep -v Inter|tr : ' '|awk '{print $1}'"};
+        ExecResult exec = ExecResult.exec(cmd);
+        String stdout = exec.stdout;
+        String[] split = stdout.split("\n");
+        List<String> list = Arrays.asList(split);
+
+        return list;
     }
 
     public String serviceState(String serviceName) throws IOException, InterruptedException {
