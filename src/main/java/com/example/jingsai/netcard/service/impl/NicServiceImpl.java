@@ -7,6 +7,7 @@ import com.example.jingsai.systemresource.utils.BaseResponse;
 import com.example.jingsai.systemresource.utils.CommandUtil;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ public class NicServiceImpl implements NicInfoService {
     @Override
     public BaseResponse getNicInfoData(List<String> nics) {
         try{
+            String[] split = nics.get(0).split(",");
+            nics = Arrays.asList(split);
             //所有网卡状态
             String[] nicStatusCmd = new String[]{"/bin/sh","-c","ns ip addr|grep BROADCAST|awk '{print $2,$9}'"};
             //网卡流量
@@ -38,6 +41,7 @@ public class NicServiceImpl implements NicInfoService {
                 nicState2.setNicSpeed(nicState1.getNicTraffic());
                 return nicState2;
             }).collect(Collectors.toList());
+            System.out.println(nicLists);
             return BaseResponse.createBySuccess(nicLists);
         }catch (Exception e){
             e.printStackTrace();
