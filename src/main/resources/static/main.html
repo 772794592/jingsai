@@ -57,9 +57,8 @@
     <body>
         <div id="app">
             <el-container>
-                <el-header id = "title">进程占用资源管理</el-header>
                 <el-container>
-                    <el-aside width="200px">Aside</el-aside>
+                    <el-head>系统资源占用管理</el-head>
                     <el-main>
                         <div id="showTable" style="display:block;">
                             <el-row>
@@ -75,22 +74,22 @@
                                     </el-table-column>
                                     <el-table-column prop="id" label="ID">
                                     </el-table-column>
-                                    <el-table-column prop="service_name" label="服务名">
+                                    <el-table-column prop="serviceName" label="服务名">
                                     </el-table-column>
                                     <!--<el-table-column prop="patientNo" label="PID">
                                     </el-table-column>-->
                                     <el-table-column label="服务状态">
                                         <template v-slot:default="v">
-                                            <i v-if="v.row.service_status==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
-                                            <i v-if="v.row.service_status==0" class="el-icon-circle-check"  style="color:greenyellow;font-size:30px"></i>
+                                            <i v-if="v.row.serviceStatus==1" class="el-icon-circle-close"  style="color:red;font-size:30px"></i>
+                                            <i v-if="v.row.serviceStatus==0" class="el-icon-circle-check"  style="color:greenyellow;font-size:30px"></i>
                                         </template>
 
                                     </el-table-column>
                                     <el-table-column label="功能">
                                         <template v-slot:default="v">
                                             <div style="line-height: 1; font-size: 0;">
-                                                <el-button size="mini" @click="seeDetail(v.row.service_name)">查看详情</el-button>
-                                                <el-button size="mini" @click="selLog(v.row.service_name)">日志审计</el-button>
+                                                <el-button size="mini" @click="seeDetail(v.row.serviceName)">查看详情</el-button>
+                                                <el-button size="mini" @click="selLog(v.row.serviceName)">日志审计</el-button>
                                             </div>
                                         </template>
                                     </el-table-column>
@@ -100,7 +99,7 @@
                                 <el-pagination
                                         @size-change="handleSizeChange"
                                         @current-change="handleCurrentChange"
-                                        :current-page="currentPage1"
+                                        :current-page.sync="currentPage1"
                                         :page-sizes="[10, 20, 50, 100]"
                                         :page-size="10"
                                         layout="total, sizes, prev, pager, next, jumper"
@@ -115,8 +114,8 @@
                                 </el-col>
                                 <el-col :span="6">
                                 <el-form :model="services" :rules="servicesRule" ref="ruleForm" label-width="80px">
-                                    <el-form-item label="服务名称" prop="service_name">
-                                        <el-input v-model="services.service_name"></el-input>
+                                    <el-form-item label="服务名称" prop="serviceName">
+                                        <el-input v-model="services.serviceName"></el-input>
                                     </el-form-item>
                                     <!--<el-form-item label="PID">
                                         <el-input v-model="services.pid"></el-input>
@@ -132,7 +131,7 @@
                         <el-dialog
                                 title="服务详情"
                                 :visible.sync="dialogVisible"
-                                width="50%">
+                                width="50%" @close="closeDiolog">
                             <el-form label-width="140px" style="text-align: left">
                                 <el-form-item label="进程ID">
                                     {{detailed.pid}}
@@ -143,22 +142,22 @@
                                 <el-form-item label="进程优先级">
                                     {{detailed.pr}}
                                 </el-form-item>
-                                <el-form-item label="虚拟内存">
-                                    {{detailed.virt}}kb
+                                <el-form-item label="虚拟内存(kb)">
+                                    {{detailed.virt}}
                                 </el-form-item>
-                                <el-form-item label="物理内存">
-                                    {{detailed.res}}kb
+                                <el-form-item label="物理内存(kb)">
+                                    {{detailed.res}}
                                 </el-form-item>
-                                <el-form-item label="共享内存">
-                                    {{detailed.shr}}kb
+                                <el-form-item label="共享内存(kb)">
+                                    {{detailed.shr}}
                                 </el-form-item>
                                 <el-form-item label="进程状态">
                                     {{detailed.s}}
                                 </el-form-item>
-                                <el-form-item label="CPU占用百分比">
+                                <el-form-item label="CPU占用">
                                     {{detailed.cpu}}%
                                 </el-form-item>
-                                <el-form-item label="物理内存占用百分比">
+                                <el-form-item label="物理内存占用">
                                     {{detailed.mem}}%
                                 </el-form-item>
                                 <el-form-item label="CPU时间总计">
@@ -196,7 +195,7 @@
                             </el-row>
                             <el-row>
                                 <el-table border :data="serviceHistory" :height="tableHeight" v-loading="loading">
-                                    <el-table-column prop="id" label="ID">
+                                    <el-table-column prop="id" width="80" label="ID">
                                     </el-table-column>
                                     <el-table-column prop="user" label="进程所有者用户">
                                     </el-table-column>
@@ -211,16 +210,23 @@
                                     <el-table-column prop="shr" label="共享内存">
                                     </el-table-column>
                                     <el-table-column prop="s" label="进程状态">
+                                        <template v-slot:default="v">
+                                            {{v.row.s == 'D' ? "不可中断的睡眠" :
+                                            v.row.s == 'R' ? "运行":
+                                            v.row.s == 'S' ? "睡眠":
+                                            v.row.s == 'T' ? "跟踪/停止":
+                                            v.row.s == 'Z' ? "僵尸进程":''}}
+                                        </template>
                                     </el-table-column>
                                     <el-table-column prop="cpu" width="130" label="CPU占用(%)">
                                     </el-table-column>
-                                    <el-table-column prop="mem" label="物理内存占用(%)">
+                                    <el-table-column prop="mem" width="200" label="物理内存占用(%)">
                                     </el-table-column>
                                     <el-table-column prop="time" label="CPU时间总计">
                                     </el-table-column>
                                     <el-table-column prop="command" label="命令名">
                                     </el-table-column>
-                                    <el-table-column prop="command" label="记录时间">
+                                    <el-table-column width="200" :formatter="gridDateFormatter" prop="recordTime" label="记录时间">
                                     </el-table-column>
                                 </el-table>
                             </el-row>
@@ -243,7 +249,13 @@
     </body>
 <script type="text/javascript">
     function getHeight(){
-        return $(window).height() - $('#title').height() - 200;
+        return $(window).height() - 200;
+    };
+    function IFrameResize(){
+        //得到父页面的iframe框架的对象
+        var obj = parent.document.getElementById("checkHtml");
+        //把当前页面内容的高度动态赋给iframe框架的高
+        obj.height = this.document.body.scrollHeight;
     }
     var vm=new Vue({
         el: '#app',
@@ -266,12 +278,12 @@
                 dialogVisible2:false,
                 services: {
                     id: '',
-                    service_name:'',
-                    service_status:'',
-                    record_time:''
+                    serviceName:'',
+                    serviceStatus:'',
+                    recordTime:''
                 },
                 servicesRule:{
-                    service_name:[{ validator: checkName, trigger: 'blur' }]
+                    serviceName:[{ validator: checkName, trigger: 'blur' }]
                 },
                 allService:[],
                 currentPage1: 1,
@@ -305,7 +317,8 @@
                 pageSize2:10,
                 pageNum2:1,
                 serviceHistory:'',
-                loading:false
+                loading:false,
+                setStatus:''
             };
         },
         methods: {
@@ -329,7 +342,10 @@
                                     message: '添加成功',
                                     type: 'success'
                                 });
-                                this.cancel('ruleForm');
+                                vm.cancel('ruleForm');
+                                vm.queryService();
+                                vm.pageSize = 10;
+                                vm.currentPage1 = 1;
                             } else {
                                 vm.$message({
                                     message: res.data.respDesc,
@@ -354,8 +370,10 @@
                     vm.sid = '';
                 }
             },
+            closeDiolog(){
+                clearInterval(vm.setStatus);
+            },
             seeDetail:function (val){
-                console.log(val);
              /* if(vm.service.status==1){
                   this.$message.error('服务未运行');
                   return false;
@@ -363,21 +381,32 @@
                 axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
                     vm.detailed = res.data.respData;
                     if(vm.detailed.s == 'D'){
-                        vm.detailed.s == '不可中断的睡眠状态';
+                        vm.detailed.s = '不可中断的睡眠状态';
                     } else if (vm.detailed.s == 'R'){
-                        vm.detailed.s == '运行';
+                        vm.detailed.s = '运行';
                     } else if (vm.detailed.s == 'S'){
-                        vm.detailed.s == '睡眠';
+                        vm.detailed.s = '睡眠';
                     } else if (vm.detailed.s == 'T'){
-                        vm.detailed.s == '跟踪/停止';
+                        vm.detailed.s = '跟踪/停止';
                     } else if (vm.detailed.s == 'Z'){
-                        vm.detailed.s == '僵尸进程';
+                        vm.detailed.s = '僵尸进程';
                     }
                 });
               vm.dialogVisible = true;
-              setInterval(function (){
+              vm.setStatus =  setInterval(function (){
                   axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
                       vm.detailed = res.data.respData;
+                      if(vm.detailed.s == 'D'){
+                          vm.detailed.s = '不可中断的睡眠状态';
+                      } else if (vm.detailed.s == 'R'){
+                          vm.detailed.s = '运行';
+                      } else if (vm.detailed.s == 'S'){
+                          vm.detailed.s = '睡眠';
+                      } else if (vm.detailed.s == 'T'){
+                          vm.detailed.s = '跟踪/停止';
+                      } else if (vm.detailed.s == 'Z'){
+                          vm.detailed.s = '僵尸进程';
+                      }
                   });
               },1000);
             },
@@ -388,7 +417,7 @@
             },
             del:function (){
                 if (vm.sid == '') {
-                    vm.$message({
+                    vm.$notify({
                         message: '请先勾选服务',
                         type: 'error'
                     });
@@ -462,20 +491,47 @@
                 vm.currentPage2 = 1;
             },
             serchLog(){
-                if((vm.beginTime == '' && vm.endTime !='') || (vm.beginTime != '' && vm.endTime =='')) {
-                    vm.$message({
-                        message: '开始时间与结束时间必须都为空或都不为空',
-                        type: 'error'
-                    });
-                }
                 if(vm.beginTime >= vm.endTime){
                     vm.$message({
                         message: '开始时间必须小于结束时间',
                         type: 'error'
                     });
+                    return false;
                 }
                 vm.pageNum2 = 1;
                 this.selLog(vm.service_name);
+            },
+            gridDateFormatter(row, column, cellValue, index) {
+                const daterc = row[column.property];
+                if (daterc) {
+                    const dateMat = new Date(daterc);
+                    const Y = dateMat.getFullYear() + "-";
+                    const M =
+                        dateMat.getMonth() + 1 < 10
+                            ? "0" + (dateMat.getMonth() + 1) + "-"
+                            : dateMat.getMonth() + 1 + "-";
+                    const D =
+                        dateMat.getDate() < 10
+                            ? "0" + dateMat.getDate() + " "
+                            : dateMat.getDate() + " ";
+
+                    const H =
+                        dateMat.getHours() < 10
+                            ? "0" + dateMat.getHours() + ":"
+                            : dateMat.getHours() + ":";
+
+                    const F =
+                        dateMat.getMinutes() < 10
+                            ? "0" + dateMat.getMinutes() + ":"
+                            : dateMat.getMinutes() + ":";
+
+                    const S =
+                        dateMat.getSeconds() < 10
+                            ? "0" + dateMat.getSeconds()
+                            : dateMat.getSeconds() + "";
+
+                    return Y + M + D + H + F + S;
+                }
             },
         },
         created(){
