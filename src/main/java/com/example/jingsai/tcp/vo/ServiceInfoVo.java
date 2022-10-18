@@ -1,9 +1,7 @@
 package com.example.jingsai.tcp.vo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.example.jingsai.tcp.pojo.Message;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,7 +31,7 @@ public class ServiceInfoVo {
      */
 //    private long nicTraffic;
 
-    Date insertTime;
+    Long insertTime;
 
 
     public ServiceInfoVo() {
@@ -63,11 +61,12 @@ public class ServiceInfoVo {
         this.tcpPort = tcpPort;
     }
 
-    public Date getInsertTime() {
+
+    public Long getInsertTime() {
         return insertTime;
     }
 
-    public void setInsertTime(Date insertTime) {
+    public void setInsertTime(Long insertTime) {
         this.insertTime = insertTime;
     }
 }

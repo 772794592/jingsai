@@ -2,6 +2,9 @@ package com.example.jingsai.tcp.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.tcp.common.BaseEnum;
 import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.exception.CustomException;
@@ -100,23 +103,18 @@ public class TcpServiceImpl implements TcpService {
         while ((line = br.readLine()) != null) {
 
             Message vo = this.convertLine(line);
-            System.out.println("===================" + vo.getInsertTime());
             vo.setPid(pid);
 
             // 入库
             if (insertDb) {
-                vo.setInsertTime(new Date());
+                vo.setInsertTime(System.currentTimeMillis());
                 tcpMapper.insertMessage(vo);
             }
 //            tcpMapper.insert(vo);
 
-            System.out.println("--------------------" + vo.getId());
-
 
             messageList.add(vo);
-            logger.info("构造的对象：{}", vo);
         }
-        System.out.println("列表集合：" + messageList);
 
         // 数组转集合
 //        List<String> strings = Arrays.asList(split);
@@ -153,7 +151,7 @@ public class TcpServiceImpl implements TcpService {
         if (message == null) {
             throw new CustomException();
         }
-        message.setInsertTime(new Date());
+        message.setInsertTime(System.currentTimeMillis());
         return tcpMapper.insertMessage(message);
     }
 
@@ -179,8 +177,12 @@ public class TcpServiceImpl implements TcpService {
 
 
     @Override
-    public List<Message> queryAll(String pid) {
-        return tcpMapper.queryAll(pid);
+    public Page<Message> queryAllPage(int pageNum, int pageSize, String search) {
+        LambdaQueryWrapper<Message> wrapper = Wrappers.lambdaQuery();
+        if (StrUtil.isNotBlank(search)) {
+            wrapper.like(Message::getPid, search);
+        }
+        return tcpMapper.selectPage(new Page<>(pageNum, pageSize),wrapper);
     }
 
     public Message convertLine(String line) {
@@ -199,7 +201,7 @@ public class TcpServiceImpl implements TcpService {
                 .program("test_java")
                 // 名字
                 .name("test_/usr/sb")
-                .insertTime(new Date())
+                .insertTime(System.currentTimeMillis())
                 .build();
     }
 

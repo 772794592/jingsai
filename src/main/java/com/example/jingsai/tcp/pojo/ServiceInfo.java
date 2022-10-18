@@ -23,7 +23,7 @@ public class ServiceInfo {
     String serviceName;
     String netName;
     String serviceState;
-    Date insertTime;
+    Long insertTime;
 
 
     public ServiceInfo() {
@@ -61,11 +61,11 @@ public class ServiceInfo {
         this.serviceState = serviceState;
     }
 
-    public Date getInsertTime() {
+    public Long getInsertTime() {
         return insertTime;
     }
 
-    public void setInsertTime(Date insertTime) {
+    public void setInsertTime(Long insertTime) {
         this.insertTime = insertTime;
     }
 }

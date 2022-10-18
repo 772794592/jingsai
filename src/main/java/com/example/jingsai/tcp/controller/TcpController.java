@@ -1,14 +1,10 @@
 package com.example.jingsai.tcp.controller;
 
-
 import com.example.jingsai.netcard.service.NicInfoService;
-
 import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
-
 import com.example.jingsai.tcp.pojo.Message;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
-
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.vo.ServiceDTO;
@@ -46,7 +42,6 @@ public class TcpController {
     private NicInfoService nicInfoService;
     @Resource
     private ServiceInfoMapper serviceInfoMapper;
-
 
     /**
      * 通过服务名获取服务pid
@@ -90,14 +85,13 @@ public class TcpController {
     }
 
 
-    @RequestMapping("/test")
-    public String test() {
-        return "test ok";
-    }
 
-    @RequestMapping("/queryAll/{pid}")
-    public List<Message> queryAll(@PathVariable String pid) {
-        return tcpService.queryAll(pid);
+
+    @RequestMapping("/queryAllPage")
+    public Result<?> queryAllPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                      @RequestParam(defaultValue = "10") Integer pageSize,
+                                      @RequestParam(defaultValue = "") String search) {
+        return Result.success(tcpService.queryAllPage(pageNum, pageSize,search));
     }
 
     @RequestMapping("/serviceInfo/{id}")
@@ -119,9 +113,26 @@ public class TcpController {
         serviceInfoVo.setTcpState(tcpListState);
         serviceInfoVo.setTcpPort(ports);
 
-        serviceInfoVo.setInsertTime(new Date());
         ArrayList<Object> objects = new ArrayList<>();
         objects.add(serviceInfoVo);
+
+       /* ArrayList<String> list = new ArrayList<>();
+        list.add(serviceInfo.getNetName());
+        BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
+        if (nicInfoData.getRespData() != null) {
+            List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
+            NicInfo info = nicInfo.get(0);
+//            for (NicInfo info : nicInfo) {
+            long nicTraffic = info.getNicTraffic();
+            long nicSpeed = info.getNicSpeed();
+            //流量
+            serviceInfoVo.setNicTraffic(nicTraffic);
+            //流速
+            serviceInfoVo.setNicSpeed(nicSpeed);
+//            }
+        }*/
+        serviceInfoVo.setInsertTime(System.currentTimeMillis());
+
         return Result.success(objects);
     }
 

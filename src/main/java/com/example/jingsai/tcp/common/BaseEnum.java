@@ -21,6 +21,8 @@ public enum BaseEnum {
 
     PID_ISNULL("402", "进程PID为空"),
 
+    NET_CARD_NOT_EXIST("406", "网卡不存在"),
+
     NOT_RUNNING("-1", "运行时异常"),
 
     TEST;
