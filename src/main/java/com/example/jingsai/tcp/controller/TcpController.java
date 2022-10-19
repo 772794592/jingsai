@@ -113,8 +113,8 @@ public class TcpController {
     public Result<?> getServiceLog(@RequestParam String id,
                                    @RequestParam(defaultValue = "1") int pageNum,
                                    @RequestParam(defaultValue = "10") int pageSize,
-                                   @RequestParam(defaultValue = "-1") Long beginTm,
-                                   @RequestParam(defaultValue = "-1") Long endTm) throws IOException, InterruptedException {
+                                   @RequestParam(defaultValue = "") String beginTm,
+                                   @RequestParam(defaultValue = "") String endTm) throws IOException, InterruptedException {
 
         ServiceInfo serviceInfo = serviceInfoService.selectOne(id);
 

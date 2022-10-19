@@ -9,6 +9,7 @@ import com.example.jingsai.tcp.service.ServiceLogService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * <p>
@@ -31,14 +32,18 @@ public class ServiceLogServiceImpl implements ServiceLogService {
     }
 
     @Override
-    public Page<ServiceLog> queryServiceLogPageByPid(String pid, int pageNum, int pageSize, long beginTm, long endTm) {
+    public Page<ServiceLog> queryServiceLogPageByPid(String pid, int pageNum, int pageSize, String beginTm, String endTm) {
         QueryWrapper<ServiceLog> wrapper = new QueryWrapper<>();
-        if (!"".equals(pid)) {
+
+        if ("".equals(beginTm) && "".equals(endTm)) {
             wrapper.eq("service_pid", pid);
+        } else if ("".equals(endTm)) { // 有开始时间
+            wrapper.ge("insert_time", beginTm).le("insert_time", System.currentTimeMillis());
+        } else if ("".equals(beginTm)) { // 有结束时间
+            wrapper.le("insert_time", endTm);
+        }else {
+            wrapper.ge("insert_time", beginTm).le("insert_time", endTm);
         }
-
-
-
         return serviceLogMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
     }
 
