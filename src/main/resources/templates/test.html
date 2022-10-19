@@ -2,9 +2,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>测试页面</title>
+    <link rel="stylesheet" href="element-ui/css/index.css">
+    <script src="element-ui/js/jquery.js"></script>
+    <script src="element-ui/js/vue.js"></script>
+    <script src="element-ui/js/index.js"></script>
+    <script src="element-ui/js/axios.min.js"></script>
+    <style>
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+        .el-row {
+            margin-top: 0px;
+        }
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            padding: 0px;
+        }
+
+        body > .el-container {
+            margin-bottom: 40px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+
+        .el-container:nth-child(7) .el-aside {
+            line-height: 320px;
+        }
+
+        html,body,#app,.el-container{
+            margin: 0;
+            padding: 0;
+            height:100%;
+        }
+    </style>
 </head>
 <body>
-测试页面123
+<div id="app">
+    <el-container>
+        <!--<el-header>Header</el-header>-->
+        <el-container>
+            <el-aside width="200px">
+                <el-menu default-active="1" background-color="#D3DCE6">
+                    <el-menu-item index="1" @click="checkHtml">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">系统资源占用管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="2" @click="checkHtml(1)">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">网络资源占用管理</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+            <el-main style="overflow:hidden">
+                <iframe id="checkHtml" src="../main.html"  width="100%" frameborder="0" scrolling="no" height="100%">
+                </iframe>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
 </body>
+    <script>
+        var vm=new Vue({
+            el:'#app',
+            methods:{
+                checkHtml(val){
+                    if(val == 1){
+                        if($('#checkHtml').attr("src") == "../netWorkResource.html"){
+                            return false;
+                        }
+                        $('#checkHtml').attr("src","../netWorkResource.html");
+                    }else{
+                        if($('#checkHtml').attr("src") == "../main.html"){
+                            return false;
+                        }
+                        $('#checkHtml').attr("src","../main.html");
+                    }
+                }
+            }
+        })
+    </script>
 </html>
