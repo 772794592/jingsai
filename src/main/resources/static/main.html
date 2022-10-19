@@ -49,16 +49,20 @@
           height:100%;
         }
 
-        .table-style /deep/ .el-table-column--selection.is-leaf .el-checkbox {
+        /*.table-style /deep/ .el-table-column--selection.is-leaf .el-checkbox {
             display: none;
+        }*/
+
+        .DisableSelection > .cell {
+            display: none !important;
         }
     </style>
 </head>
     <body>
         <div id="app">
             <el-container>
+                <el-header>进程占用系统资源管理</el-header>
                 <el-container>
-                    <el-head>系统资源占用管理</el-head>
                     <el-main>
                         <div id="showTable" style="display:block;">
                             <el-row>
@@ -69,7 +73,7 @@
                                 </el-col>
                             </el-row>
                             <el-row>
-                                <el-table border :data="allService" :height="tableHeight" ref="tb" class="table-style" @selection-change="handleSelectionChange">
+                                <el-table border :data="allService" :height="tableHeight" ref="tb" class="table-style" @selection-change="handleSelectionChange" :header-cell-class-name="headerCellClass">
                                     <el-table-column type="selection" width="55">
                                     </el-table-column>
                                     <el-table-column prop="id" label="ID">
@@ -170,7 +174,7 @@
                         </el-dialog>
                         <div id="selLog" style="display: none">
                             <el-row style="text-align: left">
-                                <el-col :span="2">
+                                <el-col :span="13">
                                     服务名称：{{service_name}}
                                 </el-col>
                                 <el-col :span="8">
@@ -248,6 +252,11 @@
         </div>
     </body>
 <script type="text/javascript">
+    //防止页面后退
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+    });
     function getHeight(){
         return $(window).height() - 200;
     };
@@ -264,10 +273,10 @@
                 if (!value) {
                     return callback(new Error('服务名不能为空'));
                 }
-                let pattern = /^\S*$/
+                /*let pattern = /^\S*$/
                 if(!pattern.test(value)){
                     return callback(new Error('服务名不能包含空格'));
-                }
+                }*/
                 callback();
             };
             return{
@@ -312,8 +321,8 @@
                     virt:''
                 },
                 service_name:'',
-                beginTime:'',
-                endTime:'',
+                beginTime:null,
+                endTime:null,
                 pageSize2:10,
                 pageNum2:1,
                 serviceHistory:'',
@@ -343,9 +352,9 @@
                                     type: 'success'
                                 });
                                 vm.cancel('ruleForm');
-                                vm.queryService();
-                                vm.pageSize = 10;
+                                vm.pageNum = 1;
                                 vm.currentPage1 = 1;
+                                vm.queryService();
                             } else {
                                 vm.$message({
                                     message: res.data.respDesc,
@@ -417,9 +426,9 @@
             },
             del:function (){
                 if (vm.sid == '') {
-                    vm.$notify({
+                    vm.$message({
                         message: '请先勾选服务',
-                        type: 'error'
+                        type:'error'
                     });
                     return false;
                 }
@@ -446,10 +455,6 @@
                                 });
                             }
                         });
-                    })
-                    .then(() => {  //上一个then()执行成功后执行后续方法
-                        this.getList();
-                        this.$modal.msgSuccess("修改成功");
                     })
                     .catch(function (err) { //取消按钮会视为erro
                         //捕获异常
@@ -487,18 +492,23 @@
             cancelTable(){
                 $('#showTable').css("display","block");
                 $("#selLog").css("display","none");
+                vm.beginTime =null;
+                vm.endTime = null ;
                 vm.pageNum2 = 1;
                 vm.currentPage2 = 1;
             },
             serchLog(){
-                if(vm.beginTime >= vm.endTime){
-                    vm.$message({
-                        message: '开始时间必须小于结束时间',
-                        type: 'error'
-                    });
-                    return false;
+                if(vm.beginTime!=null && vm.endTime!=null){
+                    if(vm.beginTime >= vm.endTime){
+                        vm.$message({
+                            message: '开始时间必须小于结束时间',
+                            type: 'error'
+                        });
+                        return false;
+                    }
                 }
                 vm.pageNum2 = 1;
+                vm.currentPage2 = 1;
                 this.selLog(vm.service_name);
             },
             gridDateFormatter(row, column, cellValue, index) {
@@ -531,6 +541,12 @@
                             : dateMat.getSeconds() + "";
 
                     return Y + M + D + H + F + S;
+                }
+            },
+            headerCellClass(row){
+                if (row.columnIndex === 0) {
+                    // 等于 0 的话就是删除表头的复选框（多选）
+                    return 'DisableSelection'
                 }
             },
         },
