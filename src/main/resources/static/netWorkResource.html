@@ -135,13 +135,13 @@
                         </el-col>
                         <el-col :span="6">
                             <el-form :model="services" :rules="servicesRule" ref="ruleForm" label-width="80px">
-                                <el-form-item label="服务名称" prop="name">
-                                    <el-input v-model="services.name"></el-input>
+                                <el-form-item label="服务名称" prop="serviceName">
+                                    <el-input v-model="services.serviceName"></el-input>
                                 </el-form-item>
-                                <el-form-item label="网卡名称" prop="netCards">
+                                <el-form-item label="网卡名称" prop="netName">
 
                                     <el-tooltip class="item" effect="dark" content="多个网卡以英文逗号分割，例：(INT1,INT2)" placement="right-end">
-                                        <el-input v-model="services.netCards" ></el-input>
+                                        <el-input v-model="services.netName" ></el-input>
                                     </el-tooltip>
                                 </el-form-item>
 
@@ -323,12 +323,12 @@
                 dialogVisible2:false,
                 dialogVisible3:false,
                 services: {
-                    name: '',
-                    netCards:''
+                    serviceName: '',
+                    netName:''
                 },
                 servicesRule:{
-                    name:[{ validator: checkName, trigger: 'blur' }],
-                    netCards: [{validator: checknetCards, trigger: 'blur'}]
+                    serviceName:[{ validator: checkName, trigger: 'blur' }],
+                    netName: [{validator: checknetCards, trigger: 'blur'}]
                 },
                 pageSize: 10,
                 pageNum: 1,
@@ -351,47 +351,7 @@
                 beginTime:null,
                 endTime:null,
                 sid:0,
-                tableData: [{
-                    foreignAddress: '2016-05-03',
-                    id: '王小虎',
-                    insertTime: '上海市普陀区金沙江路 1518 弄',
-                    localAddress: '上海市普陀区金沙江路 1518 弄',
-                    name: '上海市普陀区金沙江路 1518 弄',
-                    pid: '上海市普陀区金沙江路 1518 弄',
-                    program: '上海市普陀区金沙江路 1518 弄',
-                    state: '上海市普陀区金沙江路 1518 弄',
-                    type: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    foreignAddress: '2016-05-03',
-                    id: '王小虎',
-                    insertTime: '上海市普陀区金沙江路 1518 弄',
-                    localAddress: '上海市普陀区金沙江路 1518 弄',
-                    name: '上海市普陀区金沙江路 1518 弄',
-                    pid: '上海市普陀区金沙江路 1518 弄',
-                    program: '上海市普陀区金沙江路 1518 弄',
-                    state: '上海市普陀区金沙江路 1518 弄',
-                    type: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    foreignAddress: '2016-05-03',
-                    id: '王小虎',
-                    insertTime: '上海市普陀区金沙江路 1518 弄',
-                    localAddress: '上海市普陀区金沙江路 1518 弄',
-                    name: '上海市普陀区金沙江路 1518 弄',
-                    pid: '上海市普陀区金沙江路 1518 弄',
-                    program: '上海市普陀区金沙江路 1518 弄',
-                    state: '上海市普陀区金沙江路 1518 弄',
-                    type: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    foreignAddress: '2016-05-03',
-                    id: '王小虎',
-                    insertTime: '上海市普陀区金沙江路 1518 弄',
-                    localAddress: '上海市普陀区金沙江路 1518 弄',
-                    name: '上海市普陀区金沙江路 1518 弄',
-                    pid: '上海市普陀区金沙江路 1518 弄',
-                    program: '上海市普陀区金沙江路 1518 弄',
-                    state: '上海市普陀区金沙江路 1518 弄',
-                    type: '上海市普陀区金沙江路 1518 弄'
-                }]
+                tableData: [],
             };
         },
         methods: {
@@ -411,6 +371,9 @@
             },
             handleConnectionSearch(row) {
                 vm.Lqdetail =!vm.Lqdetail;
+                axios.get('/tcp/getTcpInfo/'+vm.name.serviceName).then(function (res){
+                    vm.tableData = res.data;
+                })
                 this.$refs.topicTable.toggleRowExpansion(row, vm.Lqdetail) // 点击button展开
             },
             queryTcpData:function(){
@@ -491,15 +454,23 @@
             submitForm:function (formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        console.log(vm.services);
-                        axios.post('/tcp/addService',vm.services).then(function (res) {
-                            this.$message({
-                                message: '添加成功',
-                                type: 'success'
-                            });
-                            this.cancel();
-                        });
 
+                        axios.post('/tcp/addService',vm.services).then(function (res) {
+                            if (res.data.respCode == 1052673){
+                                vm.services ='';
+                                vm.$message({
+                                    message: '添加成功',
+                                    type: 'success'
+                                });
+                                vm.cancel();
+
+                            }else{
+                                vm.$message({
+                                    message: res.data.respDesc,
+                                    type: 'error'
+                                });
+                            }
+                        });
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -510,6 +481,7 @@
                 $("#showTable").css("display","block");
                 $("#add").css("display","none");
                 this.$refs[formName].resetFields();
+                vm.queryTcpData();
             },
             //勾选实践
             handleSelectionChange (val) {
