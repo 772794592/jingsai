@@ -32,4 +32,10 @@ public interface TcpMapper extends BaseMapper<Message> {
 //    void insertMessage(String id, Message.ProtoType type,String localAddress,String foreignAddress,String state,String pid,String program);
     int insertMessage(Message message);
 
+    @Select("SELECT m.* FROM l_message m \n" +
+            "WHERE m.pid = #{pid} \n" +
+            "and m.insert_time \n" +
+            "BETWEEN #{beginTm}  and #{endTm}")
+    List<Message> queryMessagePage(String pid , long beginTm, long endTm);
+
 }

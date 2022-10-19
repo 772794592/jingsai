@@ -1,15 +1,14 @@
 package com.example.jingsai.tcp.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.tcp.common.BaseEnum;
 import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.Message;
-import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.utils.ExecResult;
 import org.slf4j.Logger;
@@ -25,8 +24,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * tcp服务实现类
@@ -168,7 +167,7 @@ public class TcpServiceImpl implements TcpService {
 
                 String[] locals = localAddress.split(":");
                 /*TcpLocalAddressPortVo addressPortVo = new TcpLocalAddressPortVo(pid, locals[0], locals[1]);*/
-                stringBuilder.append(locals[1]);
+                stringBuilder.append(locals[1]).append(" ");
                 //ports.add(locals[1]);
             }
         }
@@ -182,7 +181,24 @@ public class TcpServiceImpl implements TcpService {
         if (StrUtil.isNotBlank(search)) {
             wrapper.like(Message::getPid, search);
         }
-        return tcpMapper.selectPage(new Page<>(pageNum, pageSize),wrapper);
+        return tcpMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+    }
+
+    @Override
+    public Page<Message> queryMessagePageByPid(String pid, int pageNum, int pageSize, long beginTm, long endTm) {
+        QueryWrapper<Message> wrapper = new QueryWrapper<>();
+        if (beginTm == -1 && endTm == -1) {
+            return tcpMapper.selectPage(new Page<>(pageNum, pageSize), null);
+// TODO: 2022/10/19 to fix
+        } else if (endTm == -1) { // 有开始时间
+            wrapper.ge("insert_time", beginTm)
+                    .le("insert_time", System.currentTimeMillis()); //
+        } else if (beginTm == -1) { // 有结束时间
+            wrapper.le("insert_time", endTm);
+        }
+        Page<Message> messagePage = tcpMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+//        long newTm = System.currentTimeMillis() / 1000 / 60 + 1;
+        return messagePage;
     }
 
     public Message convertLine(String line) {
@@ -190,6 +206,9 @@ public class TcpServiceImpl implements TcpService {
 //        System.out.println("jsonStr:" + jsonStr);
 
         String[] split = line.split(" ");
+        if (split[0].equals(Message.ProtoType.unix)){
+            return null;
+        }
 
         // 构造对象
         return new Message.Builder()

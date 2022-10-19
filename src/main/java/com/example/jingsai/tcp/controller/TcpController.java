@@ -1,14 +1,20 @@
 package com.example.jingsai.tcp.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.netcard.service.NicInfoService;
 import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.pojo.Message;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
+import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
+import com.example.jingsai.tcp.service.ServiceLogService;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.vo.ServiceDTO;
 import com.example.jingsai.tcp.vo.ServiceInfoVo;
+import com.example.jingsai.utils.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -39,9 +46,9 @@ public class TcpController {
     private ServiceInfoService serviceInfoService;
 
     @Resource
-    private NicInfoService nicInfoService;
+    private ServiceLogService serviceLogService;
     @Resource
-    private ServiceInfoMapper serviceInfoMapper;
+    private TcpMapper tcpMapper;
 
     /**
      * 通过服务名获取服务pid
@@ -85,55 +92,83 @@ public class TcpController {
     }
 
 
+    @RequestMapping("/test")
+    public Result<?> test() {
+        List<Message> messages = tcpMapper.queryMessagePage("1526", 20221018100716L, 20221018101651L);
 
+        return Result.success(messages);
+    }
 
     @RequestMapping("/queryAllPage")
     public Result<?> queryAllPage(@RequestParam(defaultValue = "1") Integer pageNum,
-                                      @RequestParam(defaultValue = "10") Integer pageSize,
-                                      @RequestParam(defaultValue = "") String search) {
-        return Result.success(tcpService.queryAllPage(pageNum, pageSize,search));
+                                  @RequestParam(defaultValue = "10") Integer pageSize,
+                                  @RequestParam(defaultValue = "") String search) {
+        return Result.success(tcpService.queryAllPage(pageNum, pageSize, search));
     }
 
-    @RequestMapping("/serviceInfo/{id}")
-    public Result<?> getServiceInfo(@PathVariable String id) throws IOException, InterruptedException {
+    @GetMapping("/queryMessagePage")
+    public BaseResponse page(@RequestParam(defaultValue = "syncweb") String serviceName,
+                             @RequestParam(defaultValue = "1") int pageNum,
+                             @RequestParam(defaultValue = "10") int pageSize,
+                             @RequestParam(defaultValue = "-1") String beginTm,
+                             @RequestParam(defaultValue = "-1") String endTm) throws IOException, InterruptedException {
+
+        String pid = tcpService.getPidByService(serviceName);
+        Long bl = new Long(beginTm);
+        Long el = new Long(endTm);
+        System.out.println(beginTm+"====="+endTm);
+        Page<Message> messagePage = tcpService.queryMessagePageByPid(pid, pageNum, pageSize, bl, el);
+        return BaseResponse.createBySuccess(messagePage);
+    }
+
+    @RequestMapping("/serviceLog/{id}")
+    public Result<?> getServiceLog(@PathVariable String id,
+                                   @RequestParam(defaultValue = "1") int pageNum,
+                                   @RequestParam(defaultValue = "10") int pageSize,
+                                   @RequestParam(defaultValue = "-1") Long beginTm,
+                                   @RequestParam(defaultValue = "-1") Long endTm) throws IOException, InterruptedException {
 
         ServiceInfo serviceInfo = serviceInfoService.selectOne(id);
 
         String pid = tcpService.getPidByService(serviceInfo.getServiceName());
-        // 查tcp连接数
-        int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
-        // 连接状态
-        List<Message> tcpListState = tcpService.tcpList(pid, true);
-        //端口
-        StringBuilder ports = tcpService.tcpPort(pid);
-        //封装vo
-        ServiceInfoVo serviceInfoVo = new ServiceInfoVo();
 
-        serviceInfoVo.setTcpCount(String.valueOf(tcpEstablishedCount));
-        serviceInfoVo.setTcpState(tcpListState);
-        serviceInfoVo.setTcpPort(ports);
+        Page<ServiceLog> serviceLogPage = serviceLogService.queryServiceLogPageByPid(pid, pageNum, pageSize, beginTm, endTm);
 
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.add(serviceInfoVo);
 
-       /* ArrayList<String> list = new ArrayList<>();
-        list.add(serviceInfo.getNetName());
-        BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
-        if (nicInfoData.getRespData() != null) {
-            List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
-            NicInfo info = nicInfo.get(0);
-//            for (NicInfo info : nicInfo) {
-            long nicTraffic = info.getNicTraffic();
-            long nicSpeed = info.getNicSpeed();
-            //流量
-            serviceInfoVo.setNicTraffic(nicTraffic);
-            //流速
-            serviceInfoVo.setNicSpeed(nicSpeed);
-//            }
-        }*/
-        serviceInfoVo.setInsertTime(System.currentTimeMillis());
+//        // 查tcp连接数
+//        int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
+//        // 连接状态
+//        List<Message> tcpListState = tcpService.tcpList(pid, true);
+//        //端口
+//        StringBuilder ports = tcpService.tcpPort(pid);
+//        //封装vo
+//        ServiceInfoVo serviceInfoVo = new ServiceInfoVo();
+//
+//        serviceInfoVo.setTcpCount(String.valueOf(tcpEstablishedCount));
+//        serviceInfoVo.setTcpState(tcpListState);
+//        serviceInfoVo.setTcpPort(ports);
+//
+//        ArrayList<Object> objects = new ArrayList<>();
+//        objects.add(serviceInfoVo);
+//
+//       /* ArrayList<String> list = new ArrayList<>();
+//        list.add(serviceInfo.getNetName());
+//        BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
+//        if (nicInfoData.getRespData() != null) {
+//            List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
+//            NicInfo info = nicInfo.get(0);
+////            for (NicInfo info : nicInfo) {
+//            long nicTraffic = info.getNicTraffic();
+//            long nicSpeed = info.getNicSpeed();
+//            //流量
+//            serviceInfoVo.setNicTraffic(nicTraffic);
+//            //流速
+//            serviceInfoVo.setNicSpeed(nicSpeed);
+////            }
+//        }*/
+//        serviceInfoVo.setInsertTime(System.currentTimeMillis());
 
-        return Result.success(objects);
+        return Result.success(serviceLogPage);
     }
 
     // 查询服务log/分页
@@ -170,6 +205,8 @@ public class TcpController {
                                          @RequestParam(defaultValue = "") String search) {
         return Result.success(serviceInfoService.findServiceInfoPage(pageNum, pageSize, search));
     }
+
+
 
 
 }

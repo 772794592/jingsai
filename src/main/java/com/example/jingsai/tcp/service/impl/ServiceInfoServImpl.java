@@ -48,6 +48,10 @@ public class ServiceInfoServImpl implements ServiceInfoService {
     public int addService(ServiceDTO serviceDTO) throws IOException, InterruptedException {
 
         String servicePid = tcpService.getPidByService(serviceDTO.getServiceName());
+        if (!"".equals(servicePid)){
+            //TODO: 2022/10/18 添加服务名 校验
+//            serviceInfoMapper.selectOne()
+        }
         logger.info("添加服务：服务pid==>{}", servicePid);
         ServiceInfo serviceInfo = new ServiceInfo();
 

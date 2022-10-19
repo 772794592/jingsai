@@ -1,18 +1,25 @@
 package com.example.jingsai.tcp.timer;
 
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
+import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
+import com.example.jingsai.tcp.service.ServiceLogService;
 import com.example.jingsai.tcp.service.TcpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,62 +41,47 @@ public class MultiThreadScheduleTask {
     private ServiceInfoService serviceInfoService;
     @Autowired
     private ServiceInfoMapper serviceInfoMapper;
-//    @Autowired
-//    private ServiceLogMapper serviceLogMapper;
+    @Autowired
+    private ServiceLogService serviceLogService;
     @Autowired
     private TcpService tcpService;
-//    @Resource
-//    private NicInfoService nicInfoService;
 
 //    @Autowired
 //    private ThreadPoolTaskExecutor applicationTaskExecutor;
 
 
-//    @Async
-//    @Scheduled(fixedDelay = 3000)
-//    public void second() throws InterruptedException {
-//        System.out.println("第二个异步线程开始" + Thread.currentThread().getName() + "=====>>>>>" + LocalDateTime.now().toLocalTime());
-//        System.out.println();
-//        List<ServiceInfo> serviceInfos = serviceInfoService.queryService();
-//        for (ServiceInfo serviceInfo : serviceInfos) {
-//            try {
-//                // 记录日志
-//                ServiceLog serviceLog = new ServiceLog();
-//                serviceLog.setServiceName(serviceInfo.getServiceName());
-//
-//                String pid = tcpService.getPidByService(serviceInfo.getServiceName());
-//                int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
-//                serviceLog.setTcpCount(String.valueOf(tcpEstablishedCount));
-//
-//                List<String> port = tcpService.tcpPort(pid);
-//                serviceLog.setTcpPorts(Integer.toString(port.size()));
-//
-//                ArrayList<String> list = new ArrayList<>();
-//                list.add(serviceInfo.getNetName());
-//                BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
-//                if (nicInfoData.getRespData() != null&&!((List<?>) nicInfoData.getRespData()).isEmpty()) {
-//                    List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
-//                    NicInfo info = nicInfo.get(0);
-////            for (NicInfo info : nicInfo) {
-//                    long nicTraffic = info.getNicTraffic();
-//                    long nicSpeed = info.getNicSpeed();
-//                    //流量
-//                    serviceLog.setNicTraffic(nicTraffic);
-//                    //流速
-//                    serviceLog.setNicSpeed(nicSpeed);
-////            }
-//                }
-//                serviceLog.setInsertTime(new Date());
-//
-//                logger.info("定时更新ServiceLog==>{}", serviceLog);
-//                serviceLogMapper.updateById(serviceLog);
-//            } catch (IOException e) {
-//                logger.info("定时更新ServiceLog异常==>{}", e.getMessage());
-//                e.printStackTrace();
-//            }
-//        }
-//
-//    }
+    @Async
+    @Scheduled(fixedDelay = 5000)
+    public void second() throws InterruptedException {
+
+        List<ServiceInfo> serviceInfos = serviceInfoService.queryService();
+        for (ServiceInfo serviceInfo : serviceInfos) {
+            try {
+                // 服务详情入库
+                ServiceLog serviceLog = new ServiceLog();
+
+                // pid
+                String pid = tcpService.getPidByService(serviceInfo.getServiceName());
+                serviceLog.setServicePid(pid);
+                // 连接数
+                int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
+                serviceLog.setTcpCount(String.valueOf(tcpEstablishedCount));
+
+                // 连接端口
+                StringBuilder port = tcpService.tcpPort(pid);
+                serviceLog.setTcpPort(port.toString());
+
+                serviceLog.setInsertTime(System.currentTimeMillis());
+
+                logger.info("定时更新ServiceLog==>{}", serviceLog);
+                serviceLogService.insertLog(serviceLog);
+            } catch (IOException e) {
+                logger.info("定时更新ServiceLog异常==>{}", e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+    }
 
 
     /**
@@ -107,6 +99,7 @@ public class MultiThreadScheduleTask {
                 // tcp
                 String pid = tcpService.getPidByService(serviceInfo.getServiceName());
                 tcpService.tcpList(pid, true);
+
             } catch (IOException e) {
                 logger.info("定时获取服务状态异常==>{}", e.getMessage());
                 e.printStackTrace();

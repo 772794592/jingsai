@@ -2,7 +2,6 @@ package com.example.jingsai.tcp.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.tcp.pojo.Message;
-import org.apache.ibatis.annotations.Select;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,4 +42,6 @@ public interface TcpService {
 
 
     Page<Message> queryAllPage(int pageNum, int pageSize, String search);
+
+    Page<Message> queryMessagePageByPid(String pid, int pageNum, int pageSize, long beginTm, long endTm);
 }
