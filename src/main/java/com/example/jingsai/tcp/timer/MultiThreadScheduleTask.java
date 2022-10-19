@@ -2,6 +2,7 @@ package com.example.jingsai.tcp.timer;
 
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
 import com.example.jingsai.tcp.dao.ServiceLogMapper;
+import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
@@ -45,6 +46,8 @@ public class MultiThreadScheduleTask {
     private ServiceLogService serviceLogService;
     @Autowired
     private TcpService tcpService;
+    @Autowired
+    private TcpMapper tcpMapper;
 
 //    @Autowired
 //    private ThreadPoolTaskExecutor applicationTaskExecutor;
@@ -70,11 +73,12 @@ public class MultiThreadScheduleTask {
                 // 连接端口
                 StringBuilder port = tcpService.tcpPort(pid);
                 serviceLog.setTcpPort(port.toString());
-
                 serviceLog.setInsertTime(System.currentTimeMillis());
 
                 logger.info("定时更新ServiceLog==>{}", serviceLog);
                 serviceLogService.insertLog(serviceLog);
+
+
             } catch (IOException e) {
                 logger.info("定时更新ServiceLog异常==>{}", e.getMessage());
                 e.printStackTrace();
@@ -96,7 +100,8 @@ public class MultiThreadScheduleTask {
                 String state = serviceInfoService.serviceState(serviceInfo.getServiceName());
                 serviceInfo.setServiceState(state);
                 serviceInfoMapper.updateById(serviceInfo);
-                // tcp
+                String serviceName = serviceInfo.getServiceName();
+                // tcp信息入库
                 String pid = tcpService.getPidByService(serviceInfo.getServiceName());
                 tcpService.tcpList(pid, true);
 
