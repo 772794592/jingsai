@@ -74,7 +74,6 @@
     <el-container>
         <el-header>进程占用网络资源管理</el-header>
         <el-container>
-            <el-aside width="200px">Aside</el-aside>
             <el-main>
                 <div id="showTable" style="display:block;">
                     <el-row>
@@ -86,7 +85,7 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-table :header-cell-class-name="headerCellClass" :data="tcpData" :height="tableHeight" class="table-style" ref="tb"   @selection-change="handleSelectionChange">
+                        <el-table border :header-cell-class-name="headerCellClass" :data="tcpData" :height="tableHeight" class="table-style" ref="tb"   @selection-change="handleSelectionChange">
                             <el-table-column
                                     type="selection"
                                     width="55">
@@ -140,8 +139,12 @@
                                     <el-input v-model="services.name"></el-input>
                                 </el-form-item>
                                 <el-form-item label="网卡名称" prop="netCards">
-                                    <el-input v-model="services.netCards"></el-input>
+
+                                    <el-tooltip class="item" effect="dark" content="多个网卡以英文逗号分割，例：(INT1,INT2)" placement="right-end">
+                                        <el-input v-model="services.netCards" ></el-input>
+                                    </el-tooltip>
                                 </el-form-item>
+
                                 <el-form-item>
                                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
                                     <el-button @click="cancel('ruleForm')">取消</el-button>
@@ -176,7 +179,7 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                            <el-table :height="tableHeight" ref="topicTable"
+                            <el-table border :height="tableHeight" ref="topicTable"
                                     :data="serviceDetail"
                                     style="width: 100%">
                                 <el-table-column type="expand">
@@ -457,6 +460,8 @@
                 vm.queryTcpData();
                 vm.pageNum = 1;
                 vm.currentPage2 = 1;
+                vm.beginTime =null;
+                vm.endTime = null ;
             },
             //获取网卡流速和流量
             getNetCardStatus:function (val){
@@ -481,6 +486,8 @@
                 $("#showTable").css("display","none");
                 $("#add").css("display","block");
             },
+
+            //添加页面提交from
             submitForm:function (formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -518,6 +525,13 @@
             },
             //删除
             del:function (){
+                if (vm.sid == '') {
+                    vm.$message({
+                        message: '请先勾选服务',
+                        type:'error'
+                    });
+                    return false;
+                }
                 this.$confirm("是否删除服务?", "提示", {
                     iconClass: "el-icon-question", //自定义图标样式
                     confirmButtonText: "确认", //确认按钮文字更换
