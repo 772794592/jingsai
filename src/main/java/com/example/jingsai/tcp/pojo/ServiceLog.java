@@ -1,8 +1,8 @@
-package com.example.jingsai.tcp.vo;
+package com.example.jingsai.tcp.pojo;
 
-import com.example.jingsai.tcp.pojo.Message;
-
-import java.util.List;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * <p>
@@ -11,13 +11,15 @@ import java.util.List;
  * @version 1.0
  * @since 2022/10/16 11:23
  */
-public class ServiceInfoVo {
+@TableName("l_service_log")
+public class ServiceLog {
 
+    @TableId(type = IdType.AUTO)
     private String id;
-    private String pid;
+    private String servicePid;
     private String tcpCount;
-    private StringBuilder tcpPort;
-    private List<Message> tcpState;
+    private String tcpPort;
+//    private List<Message> tcpState;
     private Long insertTime;
 
 
@@ -29,12 +31,12 @@ public class ServiceInfoVo {
         this.id = id;
     }
 
-    public String getPid() {
-        return pid;
+    public String getServicePid() {
+        return servicePid;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public void setServicePid(String servicePid) {
+        this.servicePid = servicePid;
     }
 
     public String getTcpCount() {
@@ -45,20 +47,13 @@ public class ServiceInfoVo {
         this.tcpCount = tcpCount;
     }
 
-    public StringBuilder getTcpPort() {
+
+    public String getTcpPort() {
         return tcpPort;
     }
 
-    public void setTcpPort(StringBuilder tcpPort) {
+    public void setTcpPort(String tcpPort) {
         this.tcpPort = tcpPort;
-    }
-
-    public List<Message> getTcpState() {
-        return tcpState;
-    }
-
-    public void setTcpState(List<Message> tcpState) {
-        this.tcpState = tcpState;
     }
 
     public Long getInsertTime() {
