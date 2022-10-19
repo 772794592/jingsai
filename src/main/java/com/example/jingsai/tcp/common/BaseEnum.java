@@ -25,6 +25,10 @@ public enum BaseEnum {
 
     NOT_RUNNING("-1", "运行时异常"),
 
+    NOT_SERVICE("-1", "该服务已存在！"),
+
+    IS_NOT_SERVICE("-1", "未找到该服务！"),
+
     TEST;
 
     private static final BaseEnum[] VALUES;

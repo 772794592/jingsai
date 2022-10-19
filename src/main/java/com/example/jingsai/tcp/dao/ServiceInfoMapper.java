@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.jingsai.tcp.common.BaseEnum;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -14,4 +15,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ServiceInfoMapper extends BaseMapper<ServiceInfo> {
+
+    @Select("select * from l_service_info where service_name = #{serviceName} ")
+    ServiceInfo queryByName(String serviceName);
 }

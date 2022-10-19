@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.systemresource.utils.CommandUtil;
 import com.example.jingsai.systemresource.utils.EntityUtils;
 import com.example.jingsai.tcp.common.BaseEnum;
+import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
@@ -15,6 +16,7 @@ import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.utils.ExecResult;
 import com.example.jingsai.tcp.vo.ServiceDTO;
+import com.example.jingsai.utils.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,31 +47,36 @@ public class ServiceInfoServImpl implements ServiceInfoService {
     @Resource
     private TcpService tcpService;
 
-    public int addService(ServiceDTO serviceDTO) throws IOException, InterruptedException {
-
-        String servicePid = tcpService.getPidByService(serviceDTO.getServiceName());
-        if (!"".equals(servicePid)){
-            //TODO: 2022/10/18 添加服务名 校验
-//            serviceInfoMapper.selectOne()
-        }
-        logger.info("添加服务：服务pid==>{}", servicePid);
+    public BaseResponse addService(ServiceDTO serviceDTO) throws IOException, InterruptedException {
         ServiceInfo serviceInfo = new ServiceInfo();
-
+        ServiceInfo serviceInfo1 = serviceInfoMapper.queryByName(serviceDTO.getServiceName());
+        if(serviceInfo1 != null){
+            //return 服务名称已存在
+            return BaseResponse.createByError(BaseEnum.NOT_SERVICE.getResultMsg());
+        }
         serviceInfo.setServiceName(serviceDTO.getServiceName());
         // 查询有效网卡
         List<String> cars = queryNetCar();
         if (!cars.contains(serviceDTO.getNetName())){
-            throw new CustomException(BaseEnum.NET_CARD_NOT_EXIST.getResultCode(),BaseEnum.NET_CARD_NOT_EXIST.getResultMsg());
+             return  BaseResponse.createByError(BaseEnum.NET_CARD_NOT_EXIST.getResultMsg());
         }
         serviceInfo.setNetName(serviceDTO.getNetName());
-
-        // 查服务状态
-        // TODO: 2022/10/17 获取服务状态
+        //判断服务是否能存在不存在状态是否是启动的
+        String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getServiceName()};
+        CommandUtil.ExecReturn exec = CommandUtil.exec(command);
+        if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
+            if (exec.stdout.trim().equals("failed")) {
+                serviceInfo.setServiceState("1");
+            }else{
+                serviceInfo.setServiceState("0");
+            }
+        }else{
+            return  BaseResponse.createByError(BaseEnum.IS_NOT_SERVICE.getResultMsg());
+        }
         serviceInfo.setServiceState(this.serviceState(serviceDTO.getServiceName()));
-
-
         serviceInfo.setInsertTime(System.currentTimeMillis());
-        return serviceInfoMapper.insert(serviceInfo);
+        serviceInfoMapper.insert(serviceInfo);
+        return BaseResponse.createBySuccess();
     }
 
     public List<String> queryNetCar() throws IOException, InterruptedException {

@@ -13,7 +13,7 @@
             <if test="endTime !=null and endTime != '' ">
               and  record_time &lt;= #{endTime}
             </if>
-            and service_name = #{serviceName}
+            and service_name = #{serviceName} order by id desc
         </where>
 
     </select>
