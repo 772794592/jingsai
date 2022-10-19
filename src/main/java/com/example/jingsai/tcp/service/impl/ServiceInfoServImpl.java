@@ -9,6 +9,7 @@ import com.example.jingsai.systemresource.utils.CommandUtil;
 import com.example.jingsai.systemresource.utils.EntityUtils;
 import com.example.jingsai.tcp.common.BaseEnum;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.service.ServiceInfoService;
@@ -45,11 +46,14 @@ public class ServiceInfoServImpl implements ServiceInfoService {
     @Resource
     private TcpService tcpService;
 
+    @Resource
+    private TcpMapper tcpMapper;
+
     public int addService(ServiceDTO serviceDTO) throws IOException, InterruptedException {
 
         String servicePid = tcpService.getPidByService(serviceDTO.getServiceName());
         if (!"".equals(servicePid)){
-            //TODO: 2022/10/18 添加服务名 校验
+
 //            serviceInfoMapper.selectOne()
         }
         logger.info("添加服务：服务pid==>{}", servicePid);

@@ -17,6 +17,5 @@ public interface ServiceLogService {
 
     int insertLog(ServiceLog log);
 
-    Page<ServiceLog> queryServiceLogPageByPid(String pid, int pageNum, int pageSize, long beginTm, long endTm);
-
+    Page<ServiceLog> queryServiceLogPageByPid(String pid, int pageNum, int pageSize, String beginTm, String endTm);
 }
