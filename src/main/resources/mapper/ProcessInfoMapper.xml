@@ -8,7 +8,10 @@
         SELECT * FROM process_info
         <where>
             <if test="beginTime !=null and beginTime != '' ">
-                and record_time BETWEEN #{beginTime}  and #{endTime}
+              and   record_time &gt;= #{beginTime}
+            </if>
+            <if test="endTime !=null and endTime != '' ">
+              and  record_time &lt;= #{endTime}
             </if>
             and service_name = #{serviceName}
         </where>

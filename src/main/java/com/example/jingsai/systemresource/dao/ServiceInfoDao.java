@@ -25,7 +25,7 @@ public interface ServiceInfoDao {
      * @return
      */
     @Insert("INSERT into service_process (service_name,service_status,record_time) VALUES " +
-            "(#{serviceTame},#{serviceStatus},#{recordTime})")
+            "(#{serviceName},#{serviceStatus},#{recordTime})")
     int addService(ServiceInfo serviceInfo);
 
     /***

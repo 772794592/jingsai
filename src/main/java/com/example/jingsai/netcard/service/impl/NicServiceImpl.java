@@ -24,9 +24,9 @@ public class NicServiceImpl implements NicInfoService {
             String[] split = nics.get(0).split(",");
             nics = Arrays.asList(split);
             //所有网卡状态
-            String[] nicStatusCmd = new String[]{"/bin/sh","-c","ns ip addr|grep BROADCAST|awk '{print $2,$9}'"};
+            String[] nicStatusCmd = new String[]{"/bin/sh","-c","ip addr|grep BROADCAST|awk '{print $2,$9}'"};
             //网卡流量
-            String[] nicTrafficCmd = new String[]{"/bin/sh","-c","ns cat /proc/net/dev|grep -v face|grep -v Inter|tr : ' '|awk '{print $1,$2,$10}'"};
+            String[] nicTrafficCmd = new String[]{"/bin/sh","-c","cat /proc/net/dev|grep -v face|grep -v Inter|tr : ' '|awk '{print $1,$2,$10}'"};
             CommandUtil.ExecReturn nicStatus = CommandUtil.exec(nicStatusCmd);
             CommandUtil.ExecReturn nicTraffic = CommandUtil.exec(nicTrafficCmd);
             Map<String, NicInfo> map1 = getNicState(nics, nicStatus.stdout, nicTraffic.stdout);
