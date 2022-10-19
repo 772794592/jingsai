@@ -3,6 +3,8 @@ USE ferryway;
 
 DROP TABLE IF EXISTS `service_process` CASCADE;
 DROP TABLE IF EXISTS `process_info` CASCADE;
+DROP TABLE IF EXISTS `l_service_log` CASCADE;
+DROP TABLE IF EXISTS `l_message` CASCADE;
 
 
 CREATE  TABLE  `service_process` (
@@ -29,5 +31,30 @@ CREATE TABLE `process_info` (
     `time` VARCHAR(64) COMMENT '进程使用的CPU时间总计,单位1/100秒',
     `command` VARCHAR(64) COMMENT '命令名/命令行',
     `record_time` bigint COMMENT '记录的时间',
+    PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+
+CREATE TABLE `l_service_log`  (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `service_pid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `tcp_count` int NULL DEFAULT NULL,
+    `tcp_port` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `insert_time` bigint NULL DEFAULT NULL,
+    `service_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE `l_message`  (
+    `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `type` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `local_address` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '本地地址',
+    `foreign_address` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '远程地址',
+    `state` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'tcp状态',
+    `pid` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '服务pid',
+    `program` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'tcp参数',
+    `name` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'tcp连接名字',
+    `insert_time` bigint NULL DEFAULT NULL COMMENT '插入时间',
+    `service_log_id` bigint NULL DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;

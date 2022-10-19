@@ -25,10 +25,10 @@ public class ServiceLogServiceImpl implements ServiceLogService {
     private ServiceLogMapper serviceLogMapper;
 
     @Override
-    public int insertLog(ServiceLog log) {
+    public Long insertLog(ServiceLog log) {
 
-        int row = serviceLogMapper.insert(log);
-        return row;
+        serviceLogMapper.save(log);
+        return Long.valueOf(log.getId());
     }
 
     @Override
@@ -44,6 +44,14 @@ public class ServiceLogServiceImpl implements ServiceLogService {
         }else {
             wrapper.ge("insert_time", beginTm).le("insert_time", endTm);
         }
+        return serviceLogMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+    }
+
+    @Override
+    public Page<ServiceLog> queryServiceLogPageByName(String serviceName, int pageNum, int pageSize) {
+        QueryWrapper<ServiceLog> wrapper = new QueryWrapper<>();
+        wrapper.eq("service_name", serviceName);
+        wrapper.orderByDesc("id");
         return serviceLogMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
     }
 

@@ -76,23 +76,11 @@ public class TcpController {
         return String.valueOf(tcpService.tcpEstablishedCount(pid));
     }
 
-    /**
-     * 根据进程pid获取进程tcp连接状态
-     */
-    @GetMapping("/getTcpState/{pid}")
-    public List<Message> getTcpState(@PathVariable String pid) throws IOException, InterruptedException {
-        List<Message> list = tcpService.tcpList(pid, true);
-        return list;
-    }
-
-    @GetMapping("/getTcpInfo/{serviceName}")
-    public List<Message> getTcpInfo(@PathVariable String serviceName) throws IOException, InterruptedException {
-
-        String pid = tcpService.getPidByService(serviceName);
-        List<Message> messages = tcpService.tcpList(pid, true);
+    @GetMapping("/getTcpInfo/{serviceLogId}")
+    public List<Message> getTcpInfo(@PathVariable Long serviceLogId) throws IOException, InterruptedException {
+        List<Message> messages = tcpService.querMessageByServiceLogId(serviceLogId, true);
         return messages;
     }
-
 
     @RequestMapping("/test")
     public Result<?> test() {
@@ -118,43 +106,7 @@ public class TcpController {
 
         ServiceInfo serviceInfo = serviceInfoService.selectOne(id);
 
-        String pid = tcpService.getPidByService(serviceInfo.getServiceName());
-
-        Page<ServiceLog> serviceLogPage = serviceLogService.queryServiceLogPageByPid(pid, pageNum, pageSize, beginTm, endTm);
-
-
-//        // 查tcp连接数
-//        int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
-//        // 连接状态
-//        List<Message> tcpListState = tcpService.tcpList(pid, true);
-//        //端口
-//        StringBuilder ports = tcpService.tcpPort(pid);
-//        //封装vo
-//        ServiceInfoVo serviceInfoVo = new ServiceInfoVo();
-//
-//        serviceInfoVo.setTcpCount(String.valueOf(tcpEstablishedCount));
-//        serviceInfoVo.setTcpState(tcpListState);
-//        serviceInfoVo.setTcpPort(ports);
-//
-//        ArrayList<Object> objects = new ArrayList<>();
-//        objects.add(serviceInfoVo);
-//
-//       /* ArrayList<String> list = new ArrayList<>();
-//        list.add(serviceInfo.getNetName());
-//        BaseResponse nicInfoData = nicInfoService.getNicInfoData(list);
-//        if (nicInfoData.getRespData() != null) {
-//            List<NicInfo> nicInfo = (List<NicInfo>) nicInfoData.getRespData();
-//            NicInfo info = nicInfo.get(0);
-////            for (NicInfo info : nicInfo) {
-//            long nicTraffic = info.getNicTraffic();
-//            long nicSpeed = info.getNicSpeed();
-//            //流量
-//            serviceInfoVo.setNicTraffic(nicTraffic);
-//            //流速
-//            serviceInfoVo.setNicSpeed(nicSpeed);
-////            }
-//        }*/
-//        serviceInfoVo.setInsertTime(System.currentTimeMillis());
+        Page<ServiceLog> serviceLogPage = serviceLogService.queryServiceLogPageByName(serviceInfo.getServiceName(), pageNum, pageSize);
 
         return Result.success(serviceLogPage);
     }

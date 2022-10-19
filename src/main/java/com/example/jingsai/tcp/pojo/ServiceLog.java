@@ -17,6 +17,9 @@ public class ServiceLog {
     @TableId(type = IdType.AUTO)
     private String id;
     private String servicePid;
+
+    private String serviceName;
+
     private String tcpCount;
     private String tcpPort;
 //    private List<Message> tcpState;
@@ -62,5 +65,13 @@ public class ServiceLog {
 
     public void setInsertTime(Long insertTime) {
         this.insertTime = insertTime;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 }

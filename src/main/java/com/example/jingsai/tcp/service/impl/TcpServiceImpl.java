@@ -67,6 +67,14 @@ public class TcpServiceImpl implements TcpService {
     }
 
     @Override
+    public String getPidByServiceLogId(Long serviceLogId) throws IOException, InterruptedException {
+
+
+
+        return null;
+    }
+
+    @Override
     public int tcpEstablishedCount(String pid) throws IOException, InterruptedException {
         if (!StringUtils.hasLength(pid)) {
             throw new CustomException(BaseEnum.PID_ISNULL.getResultCode(), BaseEnum.PID_ISNULL.getResultMsg());
@@ -79,20 +87,20 @@ public class TcpServiceImpl implements TcpService {
     }
 
     @Override
-    public List<Message> tcpList(String pid, boolean insertDb) throws IOException, InterruptedException {
+    public List<Message> tcpList(String pid, boolean insertDb, Long serviceLogId) throws IOException, InterruptedException {
         if (!StringUtils.hasLength(pid)) {
             throw new CustomException(BaseEnum.PID_ISNULL.getResultCode(), BaseEnum.PID_ISNULL.getResultMsg());
         }
-        String[] cmd = {"sh", "-c", "netstat -anp|grep " + pid + "|awk '{print $1,$4,$5,$6,$7,$8}'"};
+        String[] cmd = {"sh", "-c", "netstat -anp|grep -v LISTEN|grep " + pid + "|awk '{print $1,$4,$5,$6,$7,$8}'"};
 
         ExecResult exec = ExecResult.exec(cmd);
         String stdout = exec.stdout;
-//        logger.info("tcp的stdout {}", stdout);
         BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(stdout.getBytes()), StandardCharsets.UTF_8));
         String line;
         ArrayList<Message> messageList = new ArrayList<>();
         while ((line = br.readLine()) != null) {
-            Message vo = this.convertLine(line);
+
+            Message vo = this.convertLine(line, serviceLogId);
             if (vo != null) {
                 vo.setPid(pid);
 
@@ -103,37 +111,8 @@ public class TcpServiceImpl implements TcpService {
                 }
                 messageList.add(vo);
             }
-//            tcpMapper.insert(vo);
         }
 
-        // 数组转集合
-//        List<String> strings = Arrays.asList(split);
-//        System.out.println(strings);
-//
-
-
-//        StringBuilder stringBuilder = new StringBuilder();
-//        while ((line = br.readLine()) != null) {
-//            stringBuilder.append(line);
-//
-//            stringBuilder.append('\n');
-//        }
-
-//        Message message = new Message();
-//        Message ms = Message.builder().pid("").build();
-//        message.setType(Message.ProtoType.tcp);
-//        message.setLocalAddress("0.0.0.0:22");
-//        message.setForeignAddress("0.0.0.0:*");
-//        message.setState("LISTEN");
-//        message.setPid("0001");
-//        message.setProgram("sshd");
-//        message.setName("/usr/sb");
-//        System.out.println("对象：" + message);
-
-
-        // 对象转json
-//        String s = JSONObject.toJSONString(message);
-//        System.out.println("Json:" + s);
         return messageList;
     }
 
@@ -147,9 +126,7 @@ public class TcpServiceImpl implements TcpService {
 
     @Override
     public StringBuilder tcpPort(String pid) throws IOException, InterruptedException {
-        ArrayList<String> ports = new ArrayList<>();
-
-        List<Message> tcpList = this.tcpList(pid, false);
+        List<Message> tcpList = this.tcpList(pid, false, 0L);
         StringBuilder stringBuilder = new StringBuilder();
         for (Message message : tcpList) {
             String localAddress = message.getLocalAddress();
@@ -157,9 +134,7 @@ public class TcpServiceImpl implements TcpService {
             if (!Message.ProtoType.unix.equals(message.getType())) {
 
                 String[] locals = localAddress.split(":");
-                /*TcpLocalAddressPortVo addressPortVo = new TcpLocalAddressPortVo(pid, locals[0], locals[1]);*/
                 stringBuilder.append(locals[1]).append(" ");
-                //ports.add(locals[1]);
             }
         }
         return stringBuilder;
@@ -192,9 +167,15 @@ public class TcpServiceImpl implements TcpService {
         return messagePage;
     }
 
-    public Message convertLine(String line) {
-//        String jsonStr = JSONObject.toJSONString(line);
-//        System.out.println("jsonStr:" + jsonStr);
+    @Override
+    public List<Message> querMessageByServiceLogId(Long serviceLogId, boolean b) {
+        QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("service_log_id", serviceLogId);
+        List<Message> list = tcpMapper.selectList(queryWrapper);
+        return list;
+    }
+
+    public Message convertLine(String line, Long serviceLogId) {
 
         String[] split = line.split(" ");
         if (Objects.equals(split[0], Message.ProtoType.tcp.toString()) || Objects.equals(split[0], Message.ProtoType.tcp6.toString())) {
@@ -209,6 +190,7 @@ public class TcpServiceImpl implements TcpService {
                     // 名字
                     .name("test_/usr/sb")
                     .insertTime(System.currentTimeMillis())
+                    .serviceLogId(serviceLogId)
                     .build();
         }
         return null;

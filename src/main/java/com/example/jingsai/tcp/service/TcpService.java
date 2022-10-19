@@ -24,6 +24,8 @@ public interface TcpService {
      */
     String getPidByService(String serviceName) throws IOException, InterruptedException;
 
+    String getPidByServiceLogId(Long serviceLogId) throws IOException, InterruptedException;
+
     /**
      * 根据进程pid获取进程tcp连接数
      */
@@ -32,7 +34,7 @@ public interface TcpService {
     /**
      * 根据进程pid获取进程tcp连接状态
      */
-    List<Message> tcpList(String pid,boolean insertDb) throws IOException, InterruptedException;
+    List<Message> tcpList(String pid,boolean insertDb, Long serviceLogId) throws IOException, InterruptedException;
     /**
      * 根据进程pid获取进程tcp端口
      * @return
@@ -44,4 +46,6 @@ public interface TcpService {
     Page<Message> queryAllPage(int pageNum, int pageSize, String search);
 
     Page<Message> queryMessagePageByPid(String pid, int pageNum, int pageSize, long beginTm, long endTm);
+
+    List<Message> querMessageByServiceLogId(Long serviceLogId, boolean b);
 }

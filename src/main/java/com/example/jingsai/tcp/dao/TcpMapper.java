@@ -26,8 +26,9 @@ public interface TcpMapper extends BaseMapper<Message> {
     List<Message> queryAll(String pid);
 
     // 插入
-    @Insert("insert into l_message values(#{id},#{type}, #{localAddress}, #{foreignAddress}, " +
-            "#{state}, #{pid}, #{program}, #{name}, #{insertTime})")
+    @Insert("insert into l_message (type,local_address,foreign_address,state,pid,program,name,insert_time,service_log_id) " +
+            "values(#{type}, #{localAddress}, #{foreignAddress}, " +
+            "#{state}, #{pid}, #{program}, #{name}, #{insertTime}, #{serviceLogId})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
 //    void insertMessage(String id, Message.ProtoType type,String localAddress,String foreignAddress,String state,String pid,String program);
     int insertMessage(Message message);

@@ -15,7 +15,9 @@ import java.util.List;
  */
 public interface ServiceLogService {
 
-    int insertLog(ServiceLog log);
+    Long insertLog(ServiceLog log);
 
     Page<ServiceLog> queryServiceLogPageByPid(String pid, int pageNum, int pageSize, String beginTm, String endTm);
+
+    Page<ServiceLog> queryServiceLogPageByName(String serviceName, int pageNum, int pageSize);
 }

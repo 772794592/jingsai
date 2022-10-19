@@ -41,6 +41,9 @@ public class Message {
     private String program;
     // 进程name
     private String name;
+
+    private long serviceLogId;
+
     // 插入时间
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
@@ -58,23 +61,6 @@ public class Message {
     public static class Builder {
 
         private final Message message;
-
-//        // 协议类型
-//        private ProtoType type;
-//        // 本机地址
-//        private String localAddress;
-//        // 远程地址
-//        private String foreignAddress;
-//        // 连接状态
-//        private String state;
-//        // 进程pid
-//        private String pid;
-//        // 进程参数
-//        private String program;
-//        // 进程name
-//        private String name;
-//
-//        private Date insert;
 
         public Builder() {
             message = new Message();
@@ -114,12 +100,14 @@ public class Message {
             message.name = name;
             return this;
         }
-//        public Builder serviceName(String serviceName) {
-//            message.serviceName = serviceName;
-//            return this;
-//        }
+
         public Builder insertTime(Long insert) {
             message.insertTime = insert;
+            return this;
+        }
+
+        public Builder serviceLogId(Long serviceLogId) {
+            message.serviceLogId = serviceLogId;
             return this;
         }
 
@@ -127,6 +115,14 @@ public class Message {
             return message;
         }
 
+    }
+
+    public long getServiceLogId() {
+        return serviceLogId;
+    }
+
+    public void setServiceLogId(long serviceLogId) {
+        this.serviceLogId = serviceLogId;
     }
 
     public String getId() {

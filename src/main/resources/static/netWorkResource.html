@@ -371,7 +371,7 @@
             },
             handleConnectionSearch(row) {
                 vm.Lqdetail =!vm.Lqdetail;
-                axios.get('/tcp/getTcpInfo/'+vm.name.serviceName).then(function (res){
+                axios.get('/tcp/getTcpInfo/'+row.id).then(function (res){
                     vm.tableData = res.data;
                 })
                 this.$refs.topicTable.toggleRowExpansion(row, vm.Lqdetail) // 点击button展开

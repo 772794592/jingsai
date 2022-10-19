@@ -8,6 +8,7 @@ import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.ServiceLogService;
 import com.example.jingsai.tcp.service.TcpService;
+import com.example.jingsai.tcp.service.impl.TcpServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,6 @@ public class MultiThreadScheduleTask {
     @Autowired
     private TcpMapper tcpMapper;
 
-//    @Autowired
-//    private ThreadPoolTaskExecutor applicationTaskExecutor;
-
-
     @Async
     @Scheduled(fixedDelay = 5000)
     public void second() throws InterruptedException {
@@ -65,6 +62,7 @@ public class MultiThreadScheduleTask {
 
                 // pid
                 String pid = tcpService.getPidByService(serviceInfo.getServiceName());
+                serviceLog.setServiceName(serviceInfo.getServiceName());
                 serviceLog.setServicePid(pid);
                 // 连接数
                 int tcpEstablishedCount = tcpService.tcpEstablishedCount(pid);
@@ -76,37 +74,12 @@ public class MultiThreadScheduleTask {
                 serviceLog.setInsertTime(System.currentTimeMillis());
 
                 logger.info("定时更新ServiceLog==>{}", serviceLog);
-                serviceLogService.insertLog(serviceLog);
 
+                Long serviceLogId = serviceLogService.insertLog(serviceLog);
+                tcpService.tcpList(pid, true, serviceLogId);
 
             } catch (IOException e) {
                 logger.info("定时更新ServiceLog异常==>{}", e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-
-    /**
-     * 默认是fixedDelay 上一次执行完毕时间后执行下一轮
-     */
-    @Scheduled(cron = "0/10 * * * * *")
-    public void run() throws InterruptedException {
-        List<ServiceInfo> serviceInfos = serviceInfoService.queryService();
-        for (ServiceInfo serviceInfo : serviceInfos) {
-            try {
-                // 更新服务状态
-                String state = serviceInfoService.serviceState(serviceInfo.getServiceName());
-                serviceInfo.setServiceState(state);
-                serviceInfoMapper.updateById(serviceInfo);
-                String serviceName = serviceInfo.getServiceName();
-                // tcp信息入库
-                String pid = tcpService.getPidByService(serviceInfo.getServiceName());
-                tcpService.tcpList(pid, true);
-
-            } catch (IOException e) {
-                logger.info("定时获取服务状态异常==>{}", e.getMessage());
                 e.printStackTrace();
             }
         }
