@@ -161,10 +161,9 @@ public class TcpController {
 
 
     // 添加网络资源
-    @RequestMapping("/addService")
-    public Result<?> addNetResource(@RequestBody ServiceDTO serviceDTO) throws IOException, InterruptedException {
-        int row = serviceInfoService.addService(serviceDTO);
-        return Result.success();
+    @PostMapping("/addService")
+    public BaseResponse addNetResource(@RequestBody ServiceDTO serviceDTO) throws IOException, InterruptedException {
+        return serviceInfoService.addService(serviceDTO);
     }
 
     // 查询
