@@ -6,9 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.tcp.common.BaseEnum;
+import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.exception.CustomException;
 import com.example.jingsai.tcp.pojo.Message;
+import com.example.jingsai.tcp.pojo.ServiceLog;
+import com.example.jingsai.tcp.service.ServiceLogService;
 import com.example.jingsai.tcp.service.TcpService;
 import com.example.jingsai.tcp.utils.ExecResult;
 import org.slf4j.Logger;
@@ -25,6 +29,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,6 +47,10 @@ public class TcpServiceImpl implements TcpService {
 
     @Resource
     private TcpMapper tcpMapper;
+    @Resource
+    private ServiceInfoMapper serviceInfoMapper;
+    @Resource
+    private ServiceLogMapper serviceLogMapper;
 
     @Override
     public String getPidByService(String serviceName) throws IOException, InterruptedException {
@@ -75,44 +84,26 @@ public class TcpServiceImpl implements TcpService {
             throw new CustomException(BaseEnum.PID_ISNULL.getResultCode(), BaseEnum.PID_ISNULL.getResultMsg());
         }
         String[] cmd = {"sh", "-c", "netstat -anp|grep " + pid + "|awk '{print $1,$4,$5,$6,$7,$8}'"};
-        /*String stdout = "tcp6 192.168.50.134:80 :::* LISTEN 1008/java \n" +
-                "tcp6 244.255.255.244:5009 :::* LISTEN 1008/java \n" +
-                "tcp6 244.255.255.244:6005 :::* LISTEN 1008/java \n" +
-                "tcp6 192.168.50.134:443 :::* LISTEN 1008/java \n" +
-                "tcp6 244.255.255.244:52840 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
-                "tcp6 244.255.255.244:52802 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
-                "tcp6 244.255.255.244:52798 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
-                "tcp6 244.255.255.244:6005 244.255.255.246:34492 ESTABLISHED 1008/java \n" +
-                "tcp6 244.255.255.244:52800 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
-                "tcp6 244.255.255.244:52836 244.255.255.246:3306 ESTABLISHED 1008/java \n" +
-                "unix ] STREAM CONNECTED 200786021 1008/java\n" +
-                "unix ] STREAM CONNECTED 200794700 1008/java";*/
+
         ExecResult exec = ExecResult.exec(cmd);
         String stdout = exec.stdout;
 //        logger.info("tcp的stdout {}", stdout);
-
         BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(stdout.getBytes()), StandardCharsets.UTF_8));
         String line;
-
-//        Message messages = JSONObject.parseObject(jsonStr, Message.class);
-//        System.out.println(messages);
-
         ArrayList<Message> messageList = new ArrayList<>();
-
         while ((line = br.readLine()) != null) {
-
             Message vo = this.convertLine(line);
-            vo.setPid(pid);
+            if (vo != null) {
+                vo.setPid(pid);
 
-            // 入库
-            if (insertDb) {
-                vo.setInsertTime(System.currentTimeMillis());
-                tcpMapper.insertMessage(vo);
+                // 入库
+                if (insertDb) {
+                    vo.setInsertTime(System.currentTimeMillis());
+                    tcpMapper.insertMessage(vo);
+                }
+                messageList.add(vo);
             }
 //            tcpMapper.insert(vo);
-
-
-            messageList.add(vo);
         }
 
         // 数组转集合
@@ -206,22 +197,21 @@ public class TcpServiceImpl implements TcpService {
 //        System.out.println("jsonStr:" + jsonStr);
 
         String[] split = line.split(" ");
-        if (split[0].equals(Message.ProtoType.unix)){
-            return null;
+        if (Objects.equals(split[0], Message.ProtoType.tcp.toString()) || Objects.equals(split[0], Message.ProtoType.tcp6.toString())) {
+            // 构造对象
+            return new Message.Builder()
+                    .type(Message.ProtoType.valueOf(split[0]))
+                    .localAddress(split[1])
+                    .foreignAddress(split[2])
+                    .state(split[3])
+                    // 参数
+                    .program("test_java")
+                    // 名字
+                    .name("test_/usr/sb")
+                    .insertTime(System.currentTimeMillis())
+                    .build();
         }
-
-        // 构造对象
-        return new Message.Builder()
-                .type(Message.ProtoType.valueOf(split[0]))
-                .localAddress(split[1])
-                .foreignAddress(split[2])
-                .state(split[3])
-                // 参数
-                .program("test_java")
-                // 名字
-                .name("test_/usr/sb")
-                .insertTime(System.currentTimeMillis())
-                .build();
+        return null;
     }
 
 

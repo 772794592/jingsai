@@ -36,6 +36,7 @@ public class Message {
     private String state;
     // 进程pid
     private String pid;
+//    private String serviceName;
     // 进程参数
     private String program;
     // 进程name
@@ -113,6 +114,10 @@ public class Message {
             message.name = name;
             return this;
         }
+//        public Builder serviceName(String serviceName) {
+//            message.serviceName = serviceName;
+//            return this;
+//        }
         public Builder insertTime(Long insert) {
             message.insertTime = insert;
             return this;
@@ -156,6 +161,8 @@ public class Message {
         return name;
     }
 
+
+
     public Long getInsertTime() {
         return insertTime;
     }
@@ -171,6 +178,8 @@ public class Message {
     public void setInsertTime(Long insertTime) {
         this.insertTime = insertTime;
     }
+
+
 
     @Override
     public String toString() {

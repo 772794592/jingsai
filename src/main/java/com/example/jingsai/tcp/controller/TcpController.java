@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.jingsai.netcard.service.NicInfoService;
 import com.example.jingsai.tcp.common.Result;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
+import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.pojo.Message;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
@@ -48,6 +49,8 @@ public class TcpController {
     @Resource
     private ServiceLogService serviceLogService;
     @Resource
+    private ServiceLogMapper serviceLogMapper;
+    @Resource
     private TcpMapper tcpMapper;
 
     /**
@@ -82,13 +85,12 @@ public class TcpController {
         return list;
     }
 
-    /**
-     * 根据进程pid获取进程tcp端口
-     */
-    @GetMapping("/getTcpPort/{pid}")
-    public StringBuilder TcpPort(@PathVariable String pid) throws IOException, InterruptedException {
-        StringBuilder tcpPorts = tcpService.tcpPort(pid);
-        return tcpPorts;
+    @GetMapping("/getTcpInfo/{serviceName}")
+    public List<Message> getTcpInfo(@PathVariable String serviceName) throws IOException, InterruptedException {
+
+        String pid = tcpService.getPidByService(serviceName);
+        List<Message> messages = tcpService.tcpList(pid, true);
+        return messages;
     }
 
 
@@ -106,23 +108,9 @@ public class TcpController {
         return Result.success(tcpService.queryAllPage(pageNum, pageSize, search));
     }
 
-    @GetMapping("/queryMessagePage")
-    public BaseResponse page(@RequestParam(defaultValue = "syncweb") String serviceName,
-                             @RequestParam(defaultValue = "1") int pageNum,
-                             @RequestParam(defaultValue = "10") int pageSize,
-                             @RequestParam(defaultValue = "-1") String beginTm,
-                             @RequestParam(defaultValue = "-1") String endTm) throws IOException, InterruptedException {
 
-        String pid = tcpService.getPidByService(serviceName);
-        Long bl = new Long(beginTm);
-        Long el = new Long(endTm);
-        System.out.println(beginTm+"====="+endTm);
-        Page<Message> messagePage = tcpService.queryMessagePageByPid(pid, pageNum, pageSize, bl, el);
-        return BaseResponse.createBySuccess(messagePage);
-    }
-
-    @RequestMapping("/serviceLog/{id}")
-    public Result<?> getServiceLog(@PathVariable String id,
+    @RequestMapping("/serviceLog")
+    public Result<?> getServiceLog(@RequestParam String id,
                                    @RequestParam(defaultValue = "1") int pageNum,
                                    @RequestParam(defaultValue = "10") int pageSize,
                                    @RequestParam(defaultValue = "-1") Long beginTm,
@@ -171,12 +159,6 @@ public class TcpController {
         return Result.success(serviceLogPage);
     }
 
-    // 查询服务log/分页
-//    @RequestMapping("/other/{id}")
-//    public Result<?> queryLogPage(@PathVariable("id") String id) {
-//
-//        return Result.success(serviceLogMapper.selectOne(new QueryWrapper<ServiceLog>().eq("id",id)));
-//    }
 
     // 添加网络资源
     @RequestMapping("/addService")
@@ -205,7 +187,6 @@ public class TcpController {
                                          @RequestParam(defaultValue = "") String search) {
         return Result.success(serviceInfoService.findServiceInfoPage(pageNum, pageSize, search));
     }
-
 
 
 
