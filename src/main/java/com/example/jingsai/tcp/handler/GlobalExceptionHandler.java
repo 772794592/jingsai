@@ -1,5 +1,7 @@
 package com.example.jingsai.tcp.handler;
 
+import com.example.jingsai.tcp.common.Result;
+import com.example.jingsai.tcp.exception.CustomException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,8 +17,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
 
-    @ExceptionHandler(Exception.class)
-    String handler(Exception e){
-        return e.getMessage();
+    @ExceptionHandler(CustomException.class)
+    Result<?> handler(CustomException e){
+        return Result.error(e.getErrorCode(), e.getErrorMsg());
     }
 }
