@@ -1,5 +1,6 @@
 package com.example.jingsai.tcp.timer;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
 import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.dao.TcpMapper;
@@ -73,7 +74,12 @@ public class MultiThreadScheduleTask {
                 serviceLog.setTcpPort(port.toString());
                 serviceLog.setInsertTime(System.currentTimeMillis());
 
-                logger.info("定时更新ServiceLog==>{}", serviceLog);
+                // 更新服务状态
+                String state = serviceInfoService.serviceState(serviceInfo.getServiceName());
+                serviceInfo.setServiceState(state);
+                serviceInfoMapper.update(serviceInfo,new QueryWrapper<ServiceInfo>().eq("service_name",serviceInfo.getServiceName()));
+
+
 
                 Long serviceLogId = serviceLogService.insertLog(serviceLog);
                 tcpService.tcpList(pid, true, serviceLogId);
