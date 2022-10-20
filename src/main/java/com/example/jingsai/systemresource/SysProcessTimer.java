@@ -6,6 +6,7 @@ import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.pojo.ServiceInfo;
 import com.example.jingsai.systemresource.utils.CommandUtil;
 import com.example.jingsai.systemresource.utils.EntityUtils;
+import com.example.jingsai.tcp.service.TcpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -45,7 +46,8 @@ public class SysProcessTimer implements CommandLineRunner {
                         }
                         for (ServiceInfo serviceInfo : serviceInfos) {
                             if (serviceInfo.getServiceStatus() == 0) {
-                                CommandUtil.ExecReturn severPid = CommandUtil.exec(new String[]{"pgrep", "-f", serviceInfo.getServiceName()});
+                                String[] pidCmd = {"sh", "-c", "systemctl status " + serviceInfo.getServiceName() + " |grep 'Main PID'|awk '{print $3}'"};
+                                CommandUtil.ExecReturn severPid = CommandUtil.exec(pidCmd);
                                 if(severPid.exitCode != 0 || "".equals(severPid.stdout)){
                                     log.info("Error get PID is not null");
                                 }

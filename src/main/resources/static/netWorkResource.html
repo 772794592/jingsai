@@ -181,7 +181,7 @@
                     <el-row>
                             <el-table border :height="tableHeight" ref="topicTable"
                                     :data="serviceDetail"
-                                    style="width: 100%">
+                                    style="width: 100%" @expand-change="getDataDetail">
                                 <el-table-column type="expand">
                                     <template slot-scope="props">
                                         <el-table :data="tableData">
@@ -355,6 +355,12 @@
             };
         },
         methods: {
+            //箭头下拉
+            getDataDetail:function (row){
+                axios.get('/tcp/getTcpInfo/'+row.id).then(function (res){
+                    vm.tableData = res.data;
+                })
+            },
             querybetweenTime:function () {
                 if(vm.beginTime!=null && vm.endTime!=null){
                     if(vm.beginTime >= vm.endTime){
