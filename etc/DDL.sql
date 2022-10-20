@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `service_process` CASCADE;
 DROP TABLE IF EXISTS `process_info` CASCADE;
 DROP TABLE IF EXISTS `l_service_log` CASCADE;
 DROP TABLE IF EXISTS `l_message` CASCADE;
+DROP TABLE IF EXISTS `l_service_info` CASCADE;
 
 
 CREATE  TABLE  `service_process` (
@@ -57,4 +58,13 @@ CREATE TABLE `l_message`  (
     `insert_time` bigint NULL DEFAULT NULL COMMENT '插入时间',
     `service_log_id` bigint NULL DEFAULT NULL,
     PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE `l_service_info`  (
+    `id` bigint NOT NULL AUTO_INCREMENT,
+    `service_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `net_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+    `service_state` int NULL DEFAULT NULL COMMENT '服务状态：0启动 1未启动',
+    `insert_time` bigint NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=INNODB DEFAULT CHARSET=UTF8;
