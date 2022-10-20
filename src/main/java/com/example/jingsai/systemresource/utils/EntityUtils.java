@@ -21,7 +21,14 @@ public class EntityUtils {
         processInfo.setPr(Integer.parseInt(messages[2].trim()));
         processInfo.setNi(Integer.parseInt(messages[3].trim()));
         processInfo.setVirt(Integer.parseInt(messages[4].trim()));
-        processInfo.setRes(messages[5].trim());
+        String res = messages[5].trim();
+        if(res.lastIndexOf("g") != -1){
+            String trafficGb = res.substring(0, res.length() - 1);
+            double trafficKb = Double.parseDouble(trafficGb) * 1024 * 1024;
+            processInfo.setRes(String.valueOf(trafficKb));
+        }else{
+            processInfo.setRes(res);
+        }
         processInfo.setShr(Integer.parseInt(messages[6].trim()));
         processInfo.setS(messages[7].trim());
         processInfo.setCpu(Double.parseDouble(messages[8].trim()));
