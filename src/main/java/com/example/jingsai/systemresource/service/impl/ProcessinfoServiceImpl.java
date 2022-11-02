@@ -33,7 +33,7 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
 
     @Override
     public List<ProcessInfo> query(String beginTime, String endTime, String serviceName) {
-        return processInfoDao.query(beginTime,endTime,serviceName);
+        return processInfoDao.query(beginTime, endTime, serviceName);
     }
 
     /***
@@ -43,21 +43,17 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
      */
     @Override
     public BaseResponse queryByname(String serviceName) {
+        ProcessInfo processInfo=null;
         try {
-            if (serviceName != null || !"".equals(serviceName)) {
-                ProcessInfo processInfo = processInfoDao.queryMaxData(serviceName);
-                if(processInfo != null) {
-                    return BaseResponse.createBySuccess(processInfo);
-                }
+            processInfo = processInfoDao.queryMaxData(serviceName);
+            if (processInfo != null) {
+                return BaseResponse.createBySuccess(processInfo);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return BaseResponse.createByError(CodeEnum.EC_GEN_INTERNAL);
     }
-
-
-
 
 
 }

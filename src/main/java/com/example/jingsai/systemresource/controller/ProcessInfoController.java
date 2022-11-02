@@ -43,7 +43,7 @@ public class ProcessInfoController {
      */
     @GetMapping("queryByname")
     public BaseResponse queryByname(String serviceName)  {
-        return  processInfoService.queryByname(serviceName);
+        return  processInfoService.queryByname(serviceName.trim());
     }
 
 

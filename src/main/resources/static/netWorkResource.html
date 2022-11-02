@@ -303,14 +303,12 @@
                 if (!value) {
                     return callback(new Error('网卡名不能为空'));
                 }
-                let pattern = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{0,}$/;
+                let pattern = /^[A-Za-z0-9-]{1,30}$/;
                 let pattern2 = /^[A-Za-z]+$/;
                 let cardList = value.split(",");
                 for(var i=0;i<cardList.length;i++){
                     if(!pattern.test(cardList[i])){
-                        if(!pattern2.test(cardList[i])){
-                            return callback(new Error('网卡名只能由纯字母或字母与数字组成'));
-                        }
+                        return callback(new Error('网卡名只能由纯字母或字母与数字组成'));
                     }
                 }
                 callback();
