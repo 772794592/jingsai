@@ -388,15 +388,11 @@
                   return false;
               }*/
                 axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
-                    let bool = false ;
                     if(res.data.respCode != '1052673'){
                         vm.$message({
                             message: res.data.respDesc,
                             type: 'error'
                         });
-                        bool = true
-                    }
-                    if (bool){
                         return false;
                     }
                     vm.detailed = res.data.respData;
@@ -411,35 +407,36 @@
                     } else if (vm.detailed.s == 'Z'){
                         vm.detailed.s = '僵尸进程';
                     }
+                    vm.dialogVisible = true;
+                    vm.setStatus =  setInterval(function (){
+                        axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                            let boo = false ;
+                            if(res.data.respCode != '1052673'){
+                                vm.$message({
+                                    message: res.data.respDesc,
+                                    type: 'error'
+                                });
+                                boo = true
+                            }
+                            if (boo){
+                                return false;
+                            }
+                            vm.detailed = res.data.respData;
+                            if(vm.detailed.s == 'D'){
+                                vm.detailed.s = '不可中断的睡眠状态';
+                            } else if (vm.detailed.s == 'R'){
+                                vm.detailed.s = '运行';
+                            } else if (vm.detailed.s == 'S'){
+                                vm.detailed.s = '睡眠';
+                            } else if (vm.detailed.s == 'T'){
+                                vm.detailed.s = '跟踪/停止';
+                            } else if (vm.detailed.s == 'Z'){
+                                vm.detailed.s = '僵尸进程';
+                            }
+                        });
+                    },1000);
                 });
-              vm.dialogVisible = true;
-              vm.setStatus =  setInterval(function (){
-                  axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
-                      let boo = false ;
-                      if(res.data.respCode != '1052673'){
-                          vm.$message({
-                              message: res.data.respDesc,
-                              type: 'error'
-                          });
-                          boo = true
-                      }
-                      if (boo){
-                          return false;
-                      }
-                      vm.detailed = res.data.respData;
-                      if(vm.detailed.s == 'D'){
-                          vm.detailed.s = '不可中断的睡眠状态';
-                      } else if (vm.detailed.s == 'R'){
-                          vm.detailed.s = '运行';
-                      } else if (vm.detailed.s == 'S'){
-                          vm.detailed.s = '睡眠';
-                      } else if (vm.detailed.s == 'T'){
-                          vm.detailed.s = '跟踪/停止';
-                      } else if (vm.detailed.s == 'Z'){
-                          vm.detailed.s = '僵尸进程';
-                      }
-                  });
-              },1000);
+
             },
             cancel:function (formName){
                 $("#showTable").css("display","block");
