@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="element-ui/css/index.css">
     <script src="element-ui/js/jquery.js"></script>
-    <script src="element-ui/js/vue.js"></script>
+    <script src="element-ui/js/vue.min.js"></script>
     <script src="element-ui/js/index.js"></script>
     <script src="element-ui/js/axios.min.js"></script>
     <style>
@@ -388,6 +388,13 @@
                   return false;
               }*/
                 axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                    if(res.data.respCode != '1052673'){
+                        vm.$message({
+                            message: res.data.respDesc,
+                            type: 'error'
+                        });
+                        return false;
+                    }
                     vm.detailed = res.data.respData;
                     if(vm.detailed.s == 'D'){
                         vm.detailed.s = '不可中断的睡眠状态';
@@ -484,6 +491,13 @@
                 let data = {beginTime: vm.beginTime,endTime: vm.endTime,pageSize:vm.pageSize2,pageNum:vm.pageNum2,serviceName:vm.service_name};
                 vm.loading = true;
                 axios.post('/jingsai/sysprocess/queryBytime',data).then(function (res){
+                    if (res.data.respCode != 1052673){
+                        vm.$message({
+                            message: res.data.respDesc,
+                            type: 'error'
+                        });
+                        return false;
+                    }
                     vm.serviceHistory = res.data.respData.list;
                     vm.count2 = res.data.respData.count;
                     vm.loading = false;
