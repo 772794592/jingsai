@@ -80,7 +80,7 @@ public class ServiceInfoServImpl implements ServiceInfoService {
     }
 
     public List<String> queryNetCar() throws IOException, InterruptedException {
-        String[] cmd = {"sh", "-c","ns cat /proc/net/dev|grep -v face|grep -v Inter|tr : ' '|awk '{print $1}'"};
+        String[] cmd = {"sh", "-c","cat /proc/net/dev|grep -v face|grep -v Inter|tr : ' '|awk '{print $1}'"};
         ExecResult exec = ExecResult.exec(cmd);
         String stdout = exec.stdout;
         String[] split = stdout.split("\n");
