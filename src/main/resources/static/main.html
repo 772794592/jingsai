@@ -388,11 +388,15 @@
                   return false;
               }*/
                 axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                    let bool = false ;
                     if(res.data.respCode != '1052673'){
                         vm.$message({
                             message: res.data.respDesc,
                             type: 'error'
                         });
+                        bool = true
+                    }
+                    if (bool){
                         return false;
                     }
                     vm.detailed = res.data.respData;
@@ -411,6 +415,16 @@
               vm.dialogVisible = true;
               vm.setStatus =  setInterval(function (){
                   axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                      if(res.data.respCode != '1052673'){
+                          vm.$message({
+                              message: res.data.respDesc,
+                              type: 'error'
+                          });
+                          bool = true
+                      }
+                      if (bool){
+                          return false;
+                      }
                       vm.detailed = res.data.respData;
                       if(vm.detailed.s == 'D'){
                           vm.detailed.s = '不可中断的睡眠状态';
