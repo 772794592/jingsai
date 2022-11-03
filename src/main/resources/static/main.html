@@ -415,14 +415,15 @@
               vm.dialogVisible = true;
               vm.setStatus =  setInterval(function (){
                   axios.get('/jingsai/sysprocess/queryByname?serviceName='+val).then(function (res){
+                      let boo = false ;
                       if(res.data.respCode != '1052673'){
                           vm.$message({
                               message: res.data.respDesc,
                               type: 'error'
                           });
-                          bool = true
+                          boo = true
                       }
-                      if (bool){
+                      if (boo){
                           return false;
                       }
                       vm.detailed = res.data.respData;
