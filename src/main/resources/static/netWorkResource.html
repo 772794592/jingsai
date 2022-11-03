@@ -474,16 +474,16 @@
                                 });
                             }
                         });
-                    } else {
-                        console.log('error submit!!');
-                        return false;
                     }
                 });
             },
             cancel:function (formName){
                 $("#showTable").css("display","block");
                 $("#add").css("display","none");
-                this.$refs[formName].resetFields();
+                this.services= {
+                    serviceName: '',
+                        netName:''
+                };
                 vm.queryTcpData();
             },
             //勾选实践
