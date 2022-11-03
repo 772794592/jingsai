@@ -87,7 +87,6 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
             for (ServiceInfo serviceInfo : serviceInfos) {
                 String[] command = new String[]{EntityUtils.CMDPARAM, "get_service_name", serviceInfo.getServiceName()};
                 CommandUtil.ExecReturn exec = CommandUtil.exec(command);
-                System.out.println(exec);
                 if (exec.exitCode == 0 && !"".equals(exec.stdout)) {
                     if (!exec.stdout.trim().equals("active")) {
                         serviceInfo.setServiceStatus(1);
