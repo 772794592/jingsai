@@ -299,7 +299,7 @@
                 }
                 callback();
             };
-            var checknetCards = (rule, value, callback) => {
+            /*var checknetCards = (rule, value, callback) => {
                 if (!value) {
                     return callback(new Error('网卡名不能为空'));
                 }
@@ -312,7 +312,7 @@
                     }
                 }
                 callback();
-            };
+            };*/
             return{
                 index:[{
                     patientNo:2
@@ -325,8 +325,8 @@
                     netName:''
                 },
                 servicesRule:{
-                    serviceName:[{ validator: checkName, trigger: 'blur' }],
-                    netName: [{validator: checknetCards, trigger: 'blur'}]
+                    serviceName:[{ validator: checkName, trigger: 'blur' }]
+                   /* netName: [{validator: checknetCards, trigger: 'blur'}]*/
                 },
                 pageSize: 10,
                 pageNum: 1,
