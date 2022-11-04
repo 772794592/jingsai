@@ -52,7 +52,7 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return BaseResponse.createByError(CodeEnum.EC_GEN_INTERNAL);
+        return BaseResponse.createBySuccess();
     }
 
 
