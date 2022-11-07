@@ -6,11 +6,13 @@ import java.io.InputStreamReader;
 
 public class CommandUtil {
 
+    private CommandUtil() {
+    }
 
-    static public class ExecReturn {
-        public int exitCode;
-        public String stdout;
-        public String stderr;
+    public static class ExecReturn {
+        public final int exitCode;
+        public final String stdout;
+        public final String stderr;
 
         public ExecReturn(int exitCode, String stdout, String stderr) {
             this.exitCode = exitCode;
@@ -30,7 +32,7 @@ public class CommandUtil {
 
 
     // execute a command and return
-    static public ExecReturn exec(String[] cmd) throws IOException, InterruptedException {
+    public static ExecReturn exec(String[] cmd) throws IOException, InterruptedException {
         Runtime rt = Runtime.getRuntime();
         Process process = rt.exec(cmd);
         process.getErrorStream();

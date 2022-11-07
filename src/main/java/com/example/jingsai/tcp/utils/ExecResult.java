@@ -14,9 +14,9 @@ import java.io.InputStreamReader;
  */
 public class ExecResult {
 
-    public int exitCode;
-    public String stdout;
-    public String stderr;
+    public final int exitCode;
+    public final String stdout;
+    public final String stderr;
 
 
     public ExecResult(int exitValue, String stdout, String stderr) {
