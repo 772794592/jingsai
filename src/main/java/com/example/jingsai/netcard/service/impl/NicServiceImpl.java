@@ -5,8 +5,11 @@ import com.example.jingsai.netcard.pojo.NicInfo;
 import com.example.jingsai.netcard.service.NicInfoService;
 import com.example.jingsai.systemresource.utils.BaseResponse;
 import com.example.jingsai.systemresource.utils.CommandUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +20,7 @@ import java.util.stream.Stream;
 
 @Service
 public class NicServiceImpl implements NicInfoService {
-
+private static final Logger logger = LoggerFactory.getLogger(NicServiceImpl.class);
     @Override
     public BaseResponse getNicInfoData(List<String> nics) {
         try{
@@ -42,8 +45,10 @@ public class NicServiceImpl implements NicInfoService {
                 return nicState2;
             }).collect(Collectors.toList());
             return BaseResponse.createBySuccess(nicLists);
-        }catch (Exception e){
+        }catch (InterruptedException | IOException e){
             e.printStackTrace();
+            logger.info("getNicInfoData --> exc");
+            Thread.currentThread().interrupt();
         }
         return BaseResponse.createByError(CodeEnum.EC_GEN_INTERNAL);
     }

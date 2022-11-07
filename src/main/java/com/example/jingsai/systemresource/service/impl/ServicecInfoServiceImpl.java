@@ -12,8 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
 public class ServicecInfoServiceImpl implements ServiceInfoService {
 
 
-    private final static Logger log = LoggerFactory.getLogger(ServicecInfoServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(ServicecInfoServiceImpl.class);
     @Resource
     private ServiceInfoDao serviceInfoDao;
 
@@ -55,8 +54,9 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
                 return BaseResponse.createBySuccess();
             }
             return BaseResponse.createByError(CodeEnum.ADD_SERVICE_ISNULL);
-        } catch (Exception e) {
+        } catch (InterruptedException | IOException  e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
             log.info("add service error {}", e.getMessage());
         }
         return BaseResponse.createByError(CodeEnum.ADD_SERVICE_ERROR);
@@ -96,8 +96,10 @@ public class ServicecInfoServiceImpl implements ServiceInfoService {
                     serviceInfoDao.updateStatus(serviceInfo.getServiceStatus(), serviceInfo.getId());
                 }
             }
-        } catch (Exception e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
+            log.info("updateStatus --> exc");
         }
     }
 

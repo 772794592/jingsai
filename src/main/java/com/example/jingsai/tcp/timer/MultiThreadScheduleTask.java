@@ -2,14 +2,12 @@ package com.example.jingsai.tcp.timer;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.jingsai.tcp.dao.ServiceInfoMapper;
-import com.example.jingsai.tcp.dao.ServiceLogMapper;
 import com.example.jingsai.tcp.dao.TcpMapper;
 import com.example.jingsai.tcp.pojo.ServiceInfo;
 import com.example.jingsai.tcp.pojo.ServiceLog;
 import com.example.jingsai.tcp.service.ServiceInfoService;
 import com.example.jingsai.tcp.service.ServiceLogService;
 import com.example.jingsai.tcp.service.TcpService;
-import com.example.jingsai.tcp.service.impl.TcpServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,8 +80,8 @@ public class MultiThreadScheduleTask {
                 tcpService.tcpList(pid, true, serviceLogId);
 
             } catch (IOException e) {
-                logger.info("定时更新ServiceLog异常==>{}", e.getMessage());
                 e.printStackTrace();
+                logger.info("定时更新ServiceLog异常==>{}", e.getMessage());
             }
         }
 

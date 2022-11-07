@@ -1,10 +1,11 @@
 package com.example.jingsai.systemresource.service.impl;
 
-import com.example.jingsai.enums.CodeEnum;
 import com.example.jingsai.systemresource.dao.ProcessInfoDao;
 import com.example.jingsai.systemresource.pojo.ProcessInfo;
 import com.example.jingsai.systemresource.service.ProcessInfoService;
 import com.example.jingsai.systemresource.utils.BaseResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Service
 public class ProcessinfoServiceImpl implements ProcessInfoService {
-
+private static final Logger logger = LoggerFactory.getLogger(ProcessinfoServiceImpl.class);
     @Resource
     private ProcessInfoDao processInfoDao;
 
@@ -51,6 +52,7 @@ public class ProcessinfoServiceImpl implements ProcessInfoService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.info("queryByname --> exc");
         }
         return BaseResponse.createBySuccess();
     }

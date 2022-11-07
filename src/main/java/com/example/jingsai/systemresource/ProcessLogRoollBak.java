@@ -15,33 +15,33 @@ import javax.annotation.Resource;
 @Order(value = 2)
 public class ProcessLogRoollBak implements CommandLineRunner {
 
-    private final static Logger log = LoggerFactory.getLogger(ProcessLogRoollBak.class);
+    private static final Logger log = LoggerFactory.getLogger(ProcessLogRoollBak.class);
     @Resource
     private ProcessInfoDao processInfoDao;
 
-    private final static Integer COUNT = 100000;
+    private static final Integer COUNT = 100000;
 
     @Override
     public void run(String... args) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    int totalCount = processInfoDao.queryTotalCount();
+                    if (totalCount >= COUNT) {
+                        processInfoDao.delProcessData();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.info("del process old data eroor");
+            } finally {
                 try {
-                    while (true) {
-                        int totalCount = processInfoDao.queryTotalCount();
-                        if (totalCount >= COUNT) {
-                            processInfoDao.delProcessData();
-                        }
-                    }
-                } catch (Exception e) {
+                    Thread.sleep(1080 * 10000L);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
-                    log.info("del process old data eroor");
-                } finally {
-                    try {
-                        Thread.sleep(1080 * 10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    // 异常后，中断线程
+                    Thread.currentThread().interrupt();
+                    log.info("sleep --> exc");
                 }
             }
         }).start();
